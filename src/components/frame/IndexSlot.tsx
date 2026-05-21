@@ -1,0 +1,9 @@
+// Index counter — the right column of the frame, vertically centred and
+// right-aligned. Empty until a project/slide context populates it (COS-140).
+export function IndexSlot({ children }: { children?: React.ReactNode }) {
+  return (
+    <div className="pointer-events-none fixed right-[var(--frame-edge)] top-[50vh] z-30 -translate-y-1/2 text-right tabular-nums text-text-white transition-colors duration-[var(--duration-base)] ease-standard canvas-light:text-text-dark">
+      {children}
+    </div>
+  );
+}
