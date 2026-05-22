@@ -1,41 +1,21 @@
-"use client";
+import { FrameShell } from "@/components/frame/FrameShell";
+import { getAllProjects, getSiteSettings } from "@/sanity/queries";
 
-import { usePathname } from "next/navigation";
-
-import { Frame } from "@/components/frame/Frame";
-import { useKeyboard } from "@/lib/keyboard";
-import { useRouterSync } from "@/lib/routerSync";
-import { useWheel } from "@/lib/wheel";
-
-// Routes that render on the light (cream) canvas. Canvas stays route-derived
-// for SSR-correct, flash-free first paint; routerSync keeps the URL in step
-// with the navigation store, so this matches the store's mode in practice.
-function isLightRoute(pathname: string): boolean {
-  return (
-    pathname === "/test/light" ||
-    pathname === "/about" ||
-    pathname === "/contact" ||
-    pathname.startsWith("/writing")
-  );
-}
-
-export default function FrameLayout({
+// Server layout for the framed routes — fetches the project list and site
+// settings (60s ISR) and hands them to the client FrameShell.
+export default async function FrameLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-
-  // Navigation behaviours — mounted once, run on every route in the group.
-  useRouterSync();
-  useKeyboard();
-  useWheel();
-
-  const canvas = isLightRoute(pathname) ? "light" : "dark";
+  const [projects, settings] = await Promise.all([
+    getAllProjects(),
+    getSiteSettings(),
+  ]);
 
   return (
-    <div data-canvas={canvas}>
-      <Frame>{children}</Frame>
-    </div>
+    <FrameShell projects={projects} tagline={settings?.taglineDefault ?? ""}>
+      {children}
+    </FrameShell>
   );
 }

@@ -1,7 +1,5 @@
 import { create } from "zustand";
 
-import { TEMP_PROJECTS } from "./_temp-projects";
-
 export type Mode =
   | "stable"
   | "cover"
@@ -12,6 +10,14 @@ export type Mode =
   | "writing"
   | "article";
 
+// The minimal per-project data the navigation state machine needs. The full
+// project content (titles, images) is passed to components as props from the
+// server fetch — the store only needs enough to drive navigation.
+export interface ProjectMeta {
+  slug: string;
+  slideCount: number;
+}
+
 export interface NavState {
   mode: Mode;
   projectIndex: number;
@@ -19,10 +25,16 @@ export interface NavState {
   articleSlug: string | null;
   returnTo: Mode | null;
 
+  // Hydrated from the Sanity fetch by FrameShell before any route stub runs.
+  projects: ProjectMeta[];
+  setProjects: (projects: ProjectMeta[]) => void;
+
   // Direct jumps (used by page stubs and router sync)
   goHome: () => void;
   goToProject: (index: number) => void;
+  goToProjectBySlug: (slug: string) => void;
   goToSlide: (projectIndex: number, slideIndex: number) => void;
+  goToSlideBySlug: (slug: string, slideIndex: number) => void;
   goAbout: () => void;
   goContact: () => void;
   goWriting: () => void;
@@ -40,8 +52,6 @@ export interface NavState {
   escape: () => void;
 }
 
-const COUNT = TEMP_PROJECTS.length;
-const slidesOf = (i: number) => TEMP_PROJECTS[i]?.slides ?? 0;
 const clamp = (n: number, lo: number, hi: number) =>
   Math.max(lo, Math.min(n, hi));
 
@@ -51,18 +61,27 @@ export const useNav = create<NavState>((set, get) => ({
   slideIndex: 0,
   articleSlug: null,
   returnTo: null,
+  projects: [],
+
+  setProjects: (projects) => set({ projects }),
 
   goHome: () =>
     set({ mode: "stable", projectIndex: 0, slideIndex: 0, articleSlug: null }),
 
   goToProject: (index) => {
-    if (index < 0 || index >= COUNT) return;
+    if (index < 0 || index >= get().projects.length) return;
     set({ mode: "cover", projectIndex: index, slideIndex: 0 });
   },
 
+  goToProjectBySlug: (slug) => {
+    const index = get().projects.findIndex((p) => p.slug === slug);
+    if (index >= 0) get().goToProject(index);
+  },
+
   goToSlide: (projectIndex, slideIndex) => {
-    if (projectIndex < 0 || projectIndex >= COUNT) return;
-    const slides = slidesOf(projectIndex);
+    const { projects } = get();
+    if (projectIndex < 0 || projectIndex >= projects.length) return;
+    const slides = projects[projectIndex]?.slideCount ?? 0;
     if (slides === 0) {
       set({ mode: "cover", projectIndex, slideIndex: 0 });
       return;
@@ -74,28 +93,36 @@ export const useNav = create<NavState>((set, get) => ({
     });
   },
 
+  goToSlideBySlug: (slug, slideIndex) => {
+    const index = get().projects.findIndex((p) => p.slug === slug);
+    if (index >= 0) get().goToSlide(index, slideIndex);
+  },
+
   goAbout: () => set({ mode: "about" }),
   goContact: () => set({ mode: "contact" }),
   goWriting: () => set({ mode: "writing", articleSlug: null }),
   openArticle: (slug) => set({ mode: "article", articleSlug: slug }),
 
   enterSlides: () => {
-    const { projectIndex } = get();
-    if (slidesOf(projectIndex) === 0) {
-      if (projectIndex < COUNT - 1) get().goToProject(projectIndex + 1);
+    const { projectIndex, projects } = get();
+    if ((projects[projectIndex]?.slideCount ?? 0) === 0) {
+      if (projectIndex < projects.length - 1) {
+        get().goToProject(projectIndex + 1);
+      }
       return;
     }
     set({ mode: "slide", slideIndex: 0 });
   },
 
   nextStep: () => {
-    const { mode, projectIndex, slideIndex } = get();
+    const { mode, projectIndex, slideIndex, projects } = get();
     if (mode === "stable") return get().goToProject(0);
     if (mode === "cover") return get().enterSlides();
     if (mode === "slide") {
-      if (slideIndex < slidesOf(projectIndex) - 1) {
+      const slides = projects[projectIndex]?.slideCount ?? 0;
+      if (slideIndex < slides - 1) {
         set({ slideIndex: slideIndex + 1 });
-      } else if (projectIndex < COUNT - 1) {
+      } else if (projectIndex < projects.length - 1) {
         get().goToProject(projectIndex + 1);
       }
     }
@@ -115,9 +142,9 @@ export const useNav = create<NavState>((set, get) => ({
   },
 
   nextProject: () => {
-    const { mode, projectIndex } = get();
+    const { mode, projectIndex, projects } = get();
     if (mode === "stable") return get().goToProject(0);
-    if (projectIndex < COUNT - 1) get().goToProject(projectIndex + 1);
+    if (projectIndex < projects.length - 1) get().goToProject(projectIndex + 1);
   },
 
   prevProject: () => {
