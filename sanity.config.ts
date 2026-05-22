@@ -4,7 +4,10 @@ import { structureTool } from "sanity/structure";
 
 import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schema } from "./src/sanity/schemas";
-import { structure } from "./src/sanity/structure";
+import { SINGLETON_TYPES, structure } from "./src/sanity/structure";
+
+const singletons = new Set<string>(SINGLETON_TYPES);
+const lockedSingletonActions = ["duplicate", "delete"];
 
 export default defineConfig({
   basePath: "/studio",
@@ -15,4 +18,19 @@ export default defineConfig({
     structureTool({ structure }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
+  document: {
+    // Keep singletons out of the global "Create" menu so a second one
+    // cannot be created. They are still editable via the structure list.
+    newDocumentOptions: (prev, { creationContext }) =>
+      creationContext.type === "global"
+        ? prev.filter((item) => !singletons.has(item.templateId))
+        : prev,
+    // Remove duplicate/delete on singletons so only one can ever exist.
+    actions: (prev, { schemaType }) =>
+      singletons.has(schemaType)
+        ? prev.filter(
+            (action) => !lockedSingletonActions.includes(action.action ?? ""),
+          )
+        : prev,
+  },
 });
