@@ -1,3 +1,4 @@
+import { MenuOverlay } from "@/components/menu/MenuOverlay";
 import { ProjectList } from "@/components/projects/ProjectList";
 import type { Project } from "@/sanity/queries";
 
@@ -37,6 +38,7 @@ export function Frame({
         </div>
         <div />
       </div>
+      <MenuOverlay />
       <IndexSlot>
         <IndexCounter />
       </IndexSlot>

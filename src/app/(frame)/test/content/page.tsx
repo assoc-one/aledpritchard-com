@@ -4,7 +4,6 @@ import {
   getAllProjects,
   getArticleBySlug,
   getContactPage,
-  getCv,
   getProjectBySlug,
   getSiteSettings,
 } from "@/sanity/queries";
@@ -26,12 +25,11 @@ function Section({ title, data }: { title: string; data: unknown }) {
 }
 
 export default async function TestContentPage() {
-  const [projects, articles, about, contact, cv, settings] = await Promise.all([
+  const [projects, articles, about, contact, settings] = await Promise.all([
     getAllProjects(),
     getAllArticles(),
     getAboutPage(),
     getContactPage(),
-    getCv(),
     getSiteSettings(),
   ]);
 
@@ -64,7 +62,6 @@ export default async function TestContentPage() {
       />
       <Section title="getAboutPage()" data={about} />
       <Section title="getContactPage()" data={contact} />
-      <Section title="getCv()" data={cv} />
       <Section title="getSiteSettings()" data={settings} />
     </main>
   );

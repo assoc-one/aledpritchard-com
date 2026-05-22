@@ -3,7 +3,6 @@ import type { SchemaTypeDefinition } from "sanity";
 import { aboutPage } from "./aboutPage";
 import { article } from "./article";
 import { contactPage } from "./contactPage";
-import { cv } from "./cv";
 import { experienceItem } from "./experienceItem";
 import { project } from "./project";
 import { siteSettings } from "./siteSettings";
@@ -19,7 +18,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     article,
     aboutPage,
     contactPage,
-    cv,
     siteSettings,
     // Objects
     slide,

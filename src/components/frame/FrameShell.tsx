@@ -55,13 +55,17 @@ export function FrameShell({
   }
 
   const pathname = usePathname();
+  const mode = useNav((s) => s.mode);
 
   // Navigation behaviours — mounted once, run on every route in the group.
   useRouterSync();
   useKeyboard();
   useWheel();
 
-  const canvas = isLightRoute(pathname) ? "light" : "dark";
+  // The menu overlay is red — force the dark-canvas label colours while it is
+  // open so the frame labels stay legible on top of it.
+  const canvas =
+    mode === "menu" || !isLightRoute(pathname) ? "dark" : "light";
 
   return (
     <div data-canvas={canvas}>

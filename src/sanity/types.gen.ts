@@ -81,28 +81,6 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
-export type SanityFileAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
-};
-
-export type Cv = {
-  _id: string;
-  _type: "cv";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  pdfFile?: {
-    asset?: SanityFileAssetReference;
-    media?: unknown;
-    _type: "file";
-  };
-  heading?: string;
-  intro?: string;
-};
-
 export type ContactPage = {
   _id: string;
   _type: "contactPage";
@@ -323,8 +301,6 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | SanityImageCrop
   | SanityImageHotspot
-  | SanityFileAssetReference
-  | Cv
   | ContactPage
   | AboutPage
   | Article
@@ -509,21 +485,6 @@ export type CONTACT_PAGE_QUERY_RESULT = {
 } | null;
 
 // Source: src/sanity/queries.ts
-// Variable: CV_QUERY
-// Query: *[_type == "cv"][0] {    _id,    _type,    pdfFile,    heading,    intro  }
-export type CV_QUERY_RESULT = {
-  _id: string;
-  _type: "cv";
-  pdfFile: {
-    asset?: SanityFileAssetReference;
-    media?: unknown;
-    _type: "file";
-  } | null;
-  heading: string | null;
-  intro: string | null;
-} | null;
-
-// Source: src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
 // Query: *[_type == "siteSettings"][0] {    _id,    _type,    taglineDefault,    metaDescription,    ogImage  }
 export type SITE_SETTINGS_QUERY_RESULT = {
@@ -550,7 +511,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "article" && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    lede,\n    body,\n    publishedAt,\n    featured,\n    order\n  }\n': ARTICLE_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "aboutPage"][0] {\n    _id,\n    _type,\n    bio,\n    experienceItems,\n    advisoryItems\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "contactPage"][0] {\n    _id,\n    _type,\n    letsTalkHeading,\n    letsTalkDescription,\n    email,\n    instagramUrl,\n    linkedinUrl,\n    subjectOptions\n  }\n': CONTACT_PAGE_QUERY_RESULT;
-    '\n  *[_type == "cv"][0] {\n    _id,\n    _type,\n    pdfFile,\n    heading,\n    intro\n  }\n': CV_QUERY_RESULT;
     '\n  *[_type == "siteSettings"][0] {\n    _id,\n    _type,\n    taglineDefault,\n    metaDescription,\n    ogImage\n  }\n': SITE_SETTINGS_QUERY_RESULT;
   }
 }

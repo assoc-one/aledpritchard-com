@@ -65,7 +65,6 @@ All site content lives in Sanity and is edited through the embedded Studio at
 | **Article** | A writing piece — lede plus rich-text body. URL: `/writing/[slug]` |
 | **About Page** | Singleton — bio, experience and advisory lists |
 | **Contact Page** | Singleton — contact details and form subject options |
-| **CV** | Singleton — downloadable PDF plus web-page fields |
 | **Site Settings** | Singleton — default tagline, meta description, OG image |
 
 Singletons exist as exactly one document each — Studio prevents creating a second.
@@ -79,7 +78,7 @@ Singletons exist as exactly one document each — Studio prevents creating a sec
 - **Add an article** — Studio → Articles → Create. Set the title, slug, lede,
   and rich-text body. Articles list reverse-chronologically by `publishedAt`
   unless a manual `order` is set.
-- **Edit About / Contact / CV / Site Settings** — open the singleton from the
+- **Edit About / Contact / Site Settings** — open the singleton from the
   Studio sidebar and edit it in place.
 - **Crop an image** — every image field has a hotspot; drag it in Studio to set
   the focal point and crop.

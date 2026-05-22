@@ -4,10 +4,6 @@ import {
   type PortableTextComponents,
 } from "@portabletext/react";
 
-import type { ARTICLE_BY_SLUG_QUERY_RESULT } from "@/sanity/types.gen";
-
-type ArticleBody = NonNullable<ARTICLE_BY_SLUG_QUERY_RESULT>["body"];
-
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
@@ -51,15 +47,16 @@ const components: PortableTextComponents = {
   },
 };
 
-// Renders an article's portable text body. The generated body type and
-// @portabletext/react's input type diverge only on `markDefs` nullability,
-// so the value is cast at this single boundary.
-export function PortableBody({ value }: { value: ArticleBody }) {
+// Renders portable text — the article body or the About bio. The generated
+// content types and @portabletext/react's input type diverge only on
+// `markDefs` nullability, so the value is cast at this single boundary.
+export function PortableBody({
+  value,
+}: {
+  value: unknown[] | null | undefined;
+}) {
   if (!value || value.length === 0) return null;
   return (
-    <PortableText
-      value={value as unknown as PortableTextBlock[]}
-      components={components}
-    />
+    <PortableText value={value as PortableTextBlock[]} components={components} />
   );
 }

@@ -89,16 +89,6 @@ export const CONTACT_PAGE_QUERY = defineQuery(`
   }
 `);
 
-export const CV_QUERY = defineQuery(`
-  *[_type == "cv"][0] {
-    _id,
-    _type,
-    pdfFile,
-    heading,
-    intro
-  }
-`);
-
 export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0] {
     _id,
@@ -135,10 +125,6 @@ export function getAboutPage() {
 
 export function getContactPage() {
   return client.fetch(CONTACT_PAGE_QUERY, {}, CACHE);
-}
-
-export function getCv() {
-  return client.fetch(CV_QUERY, {}, CACHE);
 }
 
 export function getSiteSettings() {

@@ -1,5 +1,8 @@
+"use client";
+
+import { useNav } from "@/lib/navigation";
+
 // Column 1 of the frame: role, name, and the menu toggle.
-// The menu toggle is non-functional here — behaviour lands in COS-138.
 export function FrameDetails() {
   return (
     <div className="pointer-events-auto relative h-screen">
@@ -11,6 +14,7 @@ export function FrameDetails() {
       </span>
       <button
         type="button"
+        onClick={() => useNav.getState().toggleMenu()}
         className="absolute bottom-[var(--frame-edge)] left-[var(--frame-edge)] text-text-white-70 transition-colors duration-[var(--duration-fast)] ease-out hover:text-text-white canvas-light:text-text-dark-70 canvas-light:hover:text-text-dark"
       >
         Menu
