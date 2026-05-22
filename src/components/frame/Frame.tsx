@@ -4,6 +4,8 @@ import type { Project } from "@/sanity/queries";
 import { FrameDetails } from "./FrameDetails";
 import { IndexCounter } from "./IndexCounter";
 import { IndexSlot } from "./IndexSlot";
+import { PageTitle } from "./PageTitle";
+import { PageTitleSlot } from "./PageTitleSlot";
 
 // Persistent layout shell. Renders, back to front:
 //   1. the canvas background (recoloured by [data-canvas])
@@ -38,6 +40,9 @@ export function Frame({
       <IndexSlot>
         <IndexCounter />
       </IndexSlot>
+      <PageTitleSlot>
+        <PageTitle />
+      </PageTitleSlot>
     </>
   );
 }

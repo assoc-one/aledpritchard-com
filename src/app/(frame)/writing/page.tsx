@@ -1,14 +1,19 @@
-"use client";
+import { WritingIndex } from "@/components/writing/WritingIndex";
+import { WritingMode } from "@/components/writing/WritingMode";
+import { getAllArticles } from "@/sanity/queries";
 
-import { useEffect } from "react";
+// Writing index — server-fetched, rendered in the third column.
+export default async function WritingPage() {
+  const articles = await getAllArticles();
 
-import { useNav } from "@/lib/navigation";
-
-// Route stub — sets the Writing state. Page content arrives in a later feature.
-export default function WritingStub() {
-  const goWriting = useNav((s) => s.goWriting);
-  useEffect(() => {
-    goWriting();
-  }, [goWriting]);
-  return null;
+  return (
+    <>
+      <WritingMode />
+      <main className="h-screen overflow-y-auto pl-[calc(var(--frame-col-details)+var(--frame-col-list))]">
+        <div className="max-w-[720px] p-[var(--frame-edge)]">
+          <WritingIndex articles={articles} />
+        </div>
+      </main>
+    </>
+  );
 }
