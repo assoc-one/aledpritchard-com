@@ -1,6 +1,5 @@
 "use client";
 
-import { TEMP_PROJECTS } from "@/lib/_temp-projects";
 import { useNav } from "@/lib/navigation";
 
 const SAMPLE_ARTICLE = "clarity-direction-momentum";
@@ -34,6 +33,7 @@ export default function TestNavPage() {
     slideIndex: nav.slideIndex,
     articleSlug: nav.articleSlug,
     returnTo: nav.returnTo,
+    projectCount: nav.projects.length,
   };
 
   const actions: { label: string; onClick: () => void }[] = [
@@ -66,11 +66,11 @@ export default function TestNavPage() {
         {actions.map((a) => (
           <Button key={a.label} label={a.label} onClick={a.onClick} />
         ))}
-        {TEMP_PROJECTS.map((p, i) => (
+        {nav.projects.map((p) => (
           <Button
             key={p.slug}
             label={`goToProject · ${p.slug}`}
-            onClick={() => nav.goToProject(i)}
+            onClick={() => nav.goToProjectBySlug(p.slug)}
           />
         ))}
         <Button

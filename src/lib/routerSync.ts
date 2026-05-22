@@ -2,7 +2,6 @@ import { useEffect } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { TEMP_PROJECTS } from "./_temp-projects";
 import { type NavState, useNav } from "./navigation";
 
 // Store state -> URL path. Returns null for transient modes (menu) that
@@ -12,9 +11,9 @@ function pathForState(s: NavState): string | null {
     case "stable":
       return "/";
     case "cover":
-      return `/work/${TEMP_PROJECTS[s.projectIndex]?.slug ?? ""}`;
+      return `/work/${s.projects[s.projectIndex]?.slug ?? ""}`;
     case "slide":
-      return `/work/${TEMP_PROJECTS[s.projectIndex]?.slug ?? ""}/${s.slideIndex + 1}`;
+      return `/work/${s.projects[s.projectIndex]?.slug ?? ""}/${s.slideIndex + 1}`;
     case "about":
       return "/about";
     case "contact":
@@ -38,11 +37,8 @@ function applyPath(path: string) {
 
   const work = path.match(/^\/work\/([^/]+)(?:\/(\d+))?$/);
   if (work) {
-    const idx = TEMP_PROJECTS.findIndex((p) => p.slug === work[1]);
-    if (idx >= 0) {
-      if (work[2]) nav.goToSlide(idx, parseInt(work[2], 10) - 1);
-      else nav.goToProject(idx);
-    }
+    if (work[2]) nav.goToSlideBySlug(work[1], parseInt(work[2], 10) - 1);
+    else nav.goToProjectBySlug(work[1]);
     return;
   }
 

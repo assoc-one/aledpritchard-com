@@ -26,6 +26,15 @@ a {
   text-decoration: none;
 }
 
+/* Project list column — scrollable, but the scrollbar is hidden; navigation
+   drives the scroll position. */
+.frame-list-column {
+  scrollbar-width: none;
+}
+.frame-list-column::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
