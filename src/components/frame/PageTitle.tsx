@@ -10,7 +10,6 @@ const TITLES: Partial<Record<Mode, string>> = {
   article: "Writing",
   about: "About",
   contact: "Contact",
-  cv: "CV",
 };
 
 export function PageTitle() {

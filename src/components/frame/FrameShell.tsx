@@ -23,7 +23,6 @@ function isLightRoute(pathname: string): boolean {
     pathname === "/test/light" ||
     pathname === "/about" ||
     pathname === "/contact" ||
-    pathname === "/cv" ||
     pathname.startsWith("/writing")
   );
 }

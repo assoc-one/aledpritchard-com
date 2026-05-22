@@ -26,8 +26,7 @@ export function useWheel() {
         nav.mode === "about" ||
         nav.mode === "contact" ||
         nav.mode === "writing" ||
-        nav.mode === "article" ||
-        nav.mode === "cv"
+        nav.mode === "article"
       ) {
         return;
       }

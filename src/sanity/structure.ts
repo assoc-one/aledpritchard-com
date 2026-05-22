@@ -6,7 +6,6 @@ import type { StructureBuilder, StructureResolver } from "sanity/structure";
 export const SINGLETON_TYPES = [
   "aboutPage",
   "contactPage",
-  "cv",
   "siteSettings",
 ] as const;
 
@@ -26,6 +25,5 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       singletonItem(S, "aboutPage", "About Page"),
       singletonItem(S, "contactPage", "Contact Page"),
-      singletonItem(S, "cv", "CV"),
       singletonItem(S, "siteSettings", "Site Settings"),
     ]);
