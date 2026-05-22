@@ -15,6 +15,9 @@ export function Frame({ children }: { children: React.ReactNode }) {
       <div className="relative z-10">{children}</div>
       <div className="pointer-events-none fixed inset-0 z-20 grid grid-cols-[var(--frame-col-details)_var(--frame-col-list)_1fr]">
         <FrameDetails />
+        {/* Column 2 — list column. Empty until COS-140; the wheel handler
+            uses it as the scroll target. */}
+        <div className="frame-list-column pointer-events-auto h-screen" />
       </div>
     </>
   );
