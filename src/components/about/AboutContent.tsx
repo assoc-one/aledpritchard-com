@@ -1,42 +1,42 @@
-import { PortableBody } from "@/components/writing/PortableBody";
+import {
+  PortableText,
+  type PortableTextBlock,
+  type PortableTextComponents,
+} from "@portabletext/react";
+
 import type { ABOUT_PAGE_QUERY_RESULT } from "@/sanity/types.gen";
 
 type About = NonNullable<ABOUT_PAGE_QUERY_RESULT>;
 type ExperienceItem = NonNullable<About["experienceItems"]>[number];
 
-function Section({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="grid grid-cols-[1fr_2.4fr] gap-12 pb-16">
-      <h2 className="text-text-dark">{label}</h2>
-      <div>{children}</div>
-    </section>
-  );
-}
+// Bio body copy — regular weight at 70% black, per the design.
+const bioComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => (
+      <p className="font-normal leading-[1.4] text-text-dark-70">{children}</p>
+    ),
+  },
+  marks: {
+    strong: ({ children }) => (
+      <strong className="font-medium text-text-dark">{children}</strong>
+    ),
+    em: ({ children }) => <em className="italic">{children}</em>,
+  },
+};
 
-function ExperienceRow({
-  item,
-  first,
-}: {
-  item: ExperienceItem;
-  first: boolean;
-}) {
+// One Experience / Advisory row — role title, dates, and description. Dates
+// render only when present.
+function ExperienceRow({ item }: { item: ExperienceItem }) {
   return (
-    <div
-      className={`grid grid-cols-[1fr_1fr_2fr] gap-6 pb-6 ${first ? "pt-0" : "pt-6"}`}
-    >
-      <span className="text-text-dark">{item.roleTitle}</span>
-      <span className="text-text-dark-70">{item.dates}</span>
-      <span className="leading-[1.4] text-text-dark">{item.description}</span>
+    <div className="flex items-start gap-8 font-normal leading-[1.4] text-text-dark-70">
+      <span className="w-[240px] shrink-0">{item.roleTitle}</span>
+      {item.dates && <span className="w-[110px] shrink-0">{item.dates}</span>}
+      <span className="max-w-[458px] flex-1">{item.description}</span>
     </div>
   );
 }
 
+// About content — each section is a label stacked above its copy.
 export function AboutContent({ about }: { about: About | null }) {
   if (!about) {
     return <p className="text-text-dark-70">About content coming soon.</p>;
@@ -45,25 +45,33 @@ export function AboutContent({ about }: { about: About | null }) {
   const { bio, experienceItems, advisoryItems } = about;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-16">
       {bio && bio.length > 0 && (
-        <Section label="Bio">
-          <PortableBody value={bio} />
-        </Section>
+        <section className="flex flex-col gap-4">
+          <h2 className="text-text-dark">Bio</h2>
+          <div className="flex max-w-[522px] flex-col gap-3">
+            <PortableText
+              value={bio as unknown as PortableTextBlock[]}
+              components={bioComponents}
+            />
+          </div>
+        </section>
       )}
       {experienceItems && experienceItems.length > 0 && (
-        <Section label="Experience">
-          {experienceItems.map((item, i) => (
-            <ExperienceRow key={item._key} item={item} first={i === 0} />
+        <section className="flex flex-col gap-8">
+          <h2 className="text-text-dark">Experience</h2>
+          {experienceItems.map((item) => (
+            <ExperienceRow key={item._key} item={item} />
           ))}
-        </Section>
+        </section>
       )}
       {advisoryItems && advisoryItems.length > 0 && (
-        <Section label="Advisory">
-          {advisoryItems.map((item, i) => (
-            <ExperienceRow key={item._key} item={item} first={i === 0} />
+        <section className="flex flex-col gap-8">
+          <h2 className="text-text-dark">Advisory</h2>
+          {advisoryItems.map((item) => (
+            <ExperienceRow key={item._key} item={item} />
           ))}
-        </Section>
+        </section>
       )}
     </div>
   );

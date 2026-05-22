@@ -10,7 +10,7 @@ export default async function AboutPage() {
     <>
       <AboutMode />
       <main className="h-screen overflow-y-auto pl-[calc(var(--frame-col-details)+var(--frame-col-list))]">
-        <div className="max-w-[1100px] p-[var(--frame-edge)]">
+        <div className="max-w-[880px] p-[var(--frame-edge)]">
           <AboutContent about={about} />
         </div>
       </main>
