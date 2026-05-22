@@ -5,25 +5,29 @@
 @custom-variant canvas-dark ([data-canvas="dark"] &);
 @custom-variant canvas-light ([data-canvas="light"] &);
 
-html {
-  height: 100%;
-}
+/* Base resets live in @layer base so Tailwind utilities (@layer utilities)
+   can override them — e.g. a text-colour utility on an <a> element. */
+@layer base {
+  html {
+    height: 100%;
+  }
 
-body {
-  min-height: 100%;
-  font-family: var(--font-sans);
-  font-size: var(--text-body);
-  font-weight: 500;
-  line-height: 1.4;
-  background: var(--color-canvas-dark);
-  color: var(--color-text-white);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    min-height: 100%;
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 1.4;
+    background: var(--color-canvas-dark);
+    color: var(--color-text-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 /* Project list column — scrollable, but the scrollbar is hidden; navigation
