@@ -93,9 +93,9 @@ export const CV_QUERY = defineQuery(`
   *[_type == "cv"][0] {
     _id,
     _type,
-    pdfFile,
     heading,
-    intro
+    intro,
+    "pdfUrl": pdfFile.asset->url
   }
 `);
 

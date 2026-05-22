@@ -33,7 +33,8 @@ export function useKeyboard() {
         nav.mode === "about" ||
         nav.mode === "contact" ||
         nav.mode === "writing" ||
-        nav.mode === "article"
+        nav.mode === "article" ||
+        nav.mode === "cv"
       ) {
         return;
       }

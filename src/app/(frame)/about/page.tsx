@@ -1,14 +1,19 @@
-"use client";
+import { AboutContent } from "@/components/about/AboutContent";
+import { AboutMode } from "@/components/about/AboutMode";
+import { getAboutPage } from "@/sanity/queries";
 
-import { useEffect } from "react";
+// About page — bio, experience, and advisory, server-fetched from Sanity.
+export default async function AboutPage() {
+  const about = await getAboutPage();
 
-import { useNav } from "@/lib/navigation";
-
-// Route stub — sets the About state. Page content arrives in COS-142.
-export default function AboutStub() {
-  const goAbout = useNav((s) => s.goAbout);
-  useEffect(() => {
-    goAbout();
-  }, [goAbout]);
-  return null;
+  return (
+    <>
+      <AboutMode />
+      <main className="h-screen overflow-y-auto pl-[calc(var(--frame-col-details)+var(--frame-col-list))]">
+        <div className="max-w-[1100px] p-[var(--frame-edge)]">
+          <AboutContent about={about} />
+        </div>
+      </main>
+    </>
+  );
 }

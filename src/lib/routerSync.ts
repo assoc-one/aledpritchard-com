@@ -18,6 +18,8 @@ function pathForState(s: NavState): string | null {
       return "/about";
     case "contact":
       return "/contact";
+    case "cv":
+      return "/cv";
     case "writing":
       return "/writing";
     case "article":
@@ -33,6 +35,7 @@ function applyPath(path: string) {
   if (path === "/" || path === "") return nav.goHome();
   if (path === "/about") return nav.goAbout();
   if (path === "/contact") return nav.goContact();
+  if (path === "/cv") return nav.goCv();
   if (path === "/writing") return nav.goWriting();
 
   const work = path.match(/^\/work\/([^/]+)(?:\/(\d+))?$/);

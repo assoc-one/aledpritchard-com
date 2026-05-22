@@ -8,7 +8,8 @@ export type Mode =
   | "about"
   | "contact"
   | "writing"
-  | "article";
+  | "article"
+  | "cv";
 
 // The minimal per-project data the navigation state machine needs. The full
 // project content (titles, images) is passed to components as props from the
@@ -38,6 +39,7 @@ export interface NavState {
   goAbout: () => void;
   goContact: () => void;
   goWriting: () => void;
+  goCv: () => void;
   openArticle: (slug: string) => void;
 
   // Relative steps (used by keyboard and wheel)
@@ -101,6 +103,7 @@ export const useNav = create<NavState>((set, get) => ({
   goAbout: () => set({ mode: "about" }),
   goContact: () => set({ mode: "contact" }),
   goWriting: () => set({ mode: "writing", articleSlug: null }),
+  goCv: () => set({ mode: "cv" }),
   openArticle: (slug) => set({ mode: "article", articleSlug: slug }),
 
   enterSlides: () => {
@@ -163,7 +166,12 @@ export const useNav = create<NavState>((set, get) => ({
   escape: () => {
     const { mode } = get();
     if (mode === "menu") return get().toggleMenu();
-    if (mode === "about" || mode === "contact" || mode === "writing") {
+    if (
+      mode === "about" ||
+      mode === "contact" ||
+      mode === "writing" ||
+      mode === "cv"
+    ) {
       return get().goHome();
     }
     if (mode === "article") {
