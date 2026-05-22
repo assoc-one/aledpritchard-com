@@ -50,6 +50,51 @@ The same variables are configured in the Vercel project (Development, Preview, P
 | `npm run build` | Production build |
 | `npm run start` | Serve the production build locally |
 | `npm run lint` | Run ESLint |
+| `npm run typegen` | Regenerate Sanity TypeScript types from schemas + queries |
+
+## Content management (Sanity)
+
+All site content lives in Sanity and is edited through the embedded Studio at
+`/studio` — no code changes or redeploys are needed to add or edit content.
+
+### Content types
+
+| Type | What it is |
+| --- | --- |
+| **Project** | A work project — cover image, ordered slides, metadata. URL: `/work/[slug]` |
+| **Article** | A writing piece — lede plus rich-text body. URL: `/writing/[slug]` |
+| **About Page** | Singleton — bio, experience and advisory lists |
+| **Contact Page** | Singleton — contact details and form subject options |
+| **CV** | Singleton — downloadable PDF plus web-page fields |
+| **Site Settings** | Singleton — default tagline, meta description, OG image |
+
+Singletons exist as exactly one document each — Studio prevents creating a second.
+
+### Common tasks
+
+- **Add a project** — Studio → Projects → Create. Set the title, slug, and cover
+  image; add slides (each is an image plus a `full` or `fit` variant); set
+  `order` (lower numbers appear first) and `publishedAt`. A future `publishedAt`
+  hides the project until that date.
+- **Add an article** — Studio → Articles → Create. Set the title, slug, lede,
+  and rich-text body. Articles list reverse-chronologically by `publishedAt`
+  unless a manual `order` is set.
+- **Edit About / Contact / CV / Site Settings** — open the singleton from the
+  Studio sidebar and edit it in place.
+- **Crop an image** — every image field has a hotspot; drag it in Studio to set
+  the focal point and crop.
+
+### Schemas and types
+
+Schemas live in code at `src/sanity/schemas/` (one file per type) so they
+version with the app. GROQ queries live in `src/sanity/queries.ts`. After
+changing a schema or query, regenerate the committed types:
+
+```bash
+npm run typegen
+```
+
+This writes `src/sanity/types.gen.ts` — commit it alongside the change.
 
 ## Deployment
 
