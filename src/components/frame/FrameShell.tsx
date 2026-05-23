@@ -20,7 +20,6 @@ import { Frame } from "./Frame";
 // with the navigation store, so this matches the store's mode in practice.
 function isLightRoute(pathname: string): boolean {
   return (
-    pathname === "/test/light" ||
     pathname === "/about" ||
     pathname === "/contact" ||
     pathname.startsWith("/writing")

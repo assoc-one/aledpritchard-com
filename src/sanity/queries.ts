@@ -99,8 +99,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
   }
 `);
 
-// 60s time-based ISR (COS-140). Pages needing always-fresh data
-// (e.g. /test/content) opt out via `export const dynamic = "force-dynamic"`.
+// 60s time-based ISR (COS-140). Pages needing always-fresh data can opt out
+// via `export const dynamic = "force-dynamic"`.
 const CACHE = { next: { revalidate: 60 } };
 
 export function getAllProjects() {

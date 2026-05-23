@@ -81,8 +81,14 @@ export function ProjectList({
     else goToProject(index);
   }
 
+  // `inert` keeps the off-screen list and its buttons out of focus/screen-reader
+  // order when they're visually hidden behind the menu or an inner page, and
+  // during the cold-open reveal delay.
+  const interactive = listVisible && itemsShown;
+
   return (
     <div
+      inert={!interactive}
       className="flex flex-col gap-[5px] py-[calc(50vh-11px)] pr-[var(--frame-edge)] transition-opacity duration-[var(--duration-base)] ease-standard"
       style={{
         opacity: listVisible ? 1 : 0,

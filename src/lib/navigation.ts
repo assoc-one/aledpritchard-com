@@ -174,8 +174,8 @@ export const useNav = create<NavState>((set, get) => ({
   },
 }));
 
-// Debug handle — the navigation store is also reachable as `window.__nav`,
-// consistent with the /test/nav debug route. Useful for inspecting state.
+// Debug handle — the navigation store is reachable as `window.__nav`.
+// Useful for inspecting state from the console.
 if (typeof window !== "undefined") {
   (window as unknown as { __nav: typeof useNav }).__nav = useNav;
 }
