@@ -26,6 +26,22 @@ export const siteSettings = defineType({
       description: "Default social-share image.",
       options: { hotspot: true },
     }),
+    defineField({
+      name: "icon",
+      title: "Site icon",
+      type: "image",
+      description:
+        "Single source for the browser tab favicon, Apple touch icon, and PWA manifest icon. Accepts PNG or SVG. If unset, the bundled fallback mark is used.",
+      options: { accept: "image/png,image/svg+xml" },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+          description: "Optional — used by assistive tech.",
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {

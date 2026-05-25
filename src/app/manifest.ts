@@ -12,11 +12,16 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#000000",
     theme_color: "#000000",
+    // Icons are served by the dynamic routes in src/app/icon.tsx and
+    // src/app/apple-icon.tsx — both source the mark from
+    // `siteSettings.icon` in Sanity (COS-154). The MIME `image/png` is the
+    // common case; SVG uploads passthrough at the route level and browsers
+    // read the actual Content-Type response header rather than this hint.
     icons: [
       {
-        src: "/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/icon",
+        sizes: "32x32",
+        type: "image/png",
       },
       {
         src: "/apple-icon",
