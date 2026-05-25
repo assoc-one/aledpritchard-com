@@ -51,6 +51,17 @@ The same variables are configured in the Vercel project (Development, Preview, P
 | `npm run start` | Serve the production build locally |
 | `npm run lint` | Run ESLint |
 | `npm run typegen` | Regenerate Sanity TypeScript types from schemas + queries |
+| `npm run storybook` | Start the Storybook dev server (default port 6006) |
+| `npm run build-storybook` | Build a static Storybook bundle |
+
+## Component library (Storybook)
+
+Storybook hosts the design-token reference and (from COS-156 onwards) every UI component.
+
+- `npm run storybook` — local dev server (default `http://localhost:6006`)
+- `npm run build-storybook` — static build (used for any future deploy target)
+
+The token reference lives under **Foundations / Tokens**. The matching live page at `/styleguide` is retained as a regression check until COS-157.
 
 ## Content management (Sanity)
 
