@@ -95,7 +95,11 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     _type,
     taglineDefault,
     metaDescription,
-    ogImage
+    ogImage,
+    icon {
+      ...,
+      asset->{ _id, url, mimeType, extension }
+    }
   }
 `);
 

@@ -63,6 +63,14 @@ export type SiteSettings = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+  icon?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
 };
 
 export type SanityImageCrop = {
@@ -486,7 +494,7 @@ export type CONTACT_PAGE_QUERY_RESULT = {
 
 // Source: src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0] {    _id,    _type,    taglineDefault,    metaDescription,    ogImage  }
+// Query: *[_type == "siteSettings"][0] {    _id,    _type,    taglineDefault,    metaDescription,    ogImage,    icon {      ...,      asset->{ _id, url, mimeType, extension }    }  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   _id: string;
   _type: "siteSettings";
@@ -497,6 +505,19 @@ export type SITE_SETTINGS_QUERY_RESULT = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  icon: {
+    asset: {
+      _id: string;
+      url: string | null;
+      mimeType: string | null;
+      extension: string | null;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
     _type: "image";
   } | null;
 } | null;
@@ -511,6 +532,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "article" && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    lede,\n    body,\n    publishedAt,\n    featured,\n    order\n  }\n': ARTICLE_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "aboutPage"][0] {\n    _id,\n    _type,\n    bio,\n    experienceItems,\n    advisoryItems\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "contactPage"][0] {\n    _id,\n    _type,\n    letsTalkHeading,\n    letsTalkDescription,\n    email,\n    instagramUrl,\n    linkedinUrl,\n    subjectOptions\n  }\n': CONTACT_PAGE_QUERY_RESULT;
-    '\n  *[_type == "siteSettings"][0] {\n    _id,\n    _type,\n    taglineDefault,\n    metaDescription,\n    ogImage\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "siteSettings"][0] {\n    _id,\n    _type,\n    taglineDefault,\n    metaDescription,\n    ogImage,\n    icon {\n      ...,\n      asset->{ _id, url, mimeType, extension }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
   }
 }
