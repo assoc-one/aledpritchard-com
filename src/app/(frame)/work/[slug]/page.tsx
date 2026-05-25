@@ -1,17 +1,59 @@
-"use client";
+import type { Metadata } from "next";
 
-import { useEffect } from "react";
+import { WorkCoverStub } from "@/components/projects/WorkCoverStub";
+import { siteName, siteUrl } from "@/lib/site";
+import { getAllProjects, getProjectBySlug } from "@/sanity/queries";
 
-import { useParams } from "next/navigation";
+export async function generateStaticParams() {
+  const projects = await getAllProjects();
+  return projects.flatMap((project) =>
+    project.slug ? [{ slug: project.slug }] : [],
+  );
+}
 
-import { useNav } from "@/lib/navigation";
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+  if (!project) return {};
 
-// Route stub — lands the navigation store in the project cover state.
-export default function WorkCoverStub() {
-  const params = useParams<{ slug: string }>();
-  const goToProjectBySlug = useNav((s) => s.goToProjectBySlug);
-  useEffect(() => {
-    goToProjectBySlug(params.slug);
-  }, [params.slug, goToProjectBySlug]);
-  return null;
+  return {
+    title: project.title,
+    description: project.summary ?? undefined,
+    alternates: { canonical: `/work/${slug}` },
+    openGraph: {
+      type: "article",
+      title: `${project.title} — ${siteName}`,
+      description: project.summary ?? undefined,
+      url: `${siteUrl}/work/${slug}`,
+    },
+    twitter: {
+      title: `${project.title} — ${siteName}`,
+      description: project.summary ?? undefined,
+    },
+  };
+}
+
+// Server route — resolves per-project metadata, then hands the slug to the
+// client stub. The framed visuals render from the navigation store; the
+// sr-only heading gives screen readers the project title.
+export default async function WorkCoverPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+  return (
+    <>
+      <main className="sr-only">
+        <h1>{project?.title ?? "Work"}</h1>
+        {project?.summary ? <p>{project.summary}</p> : null}
+      </main>
+      <WorkCoverStub slug={slug} />
+    </>
+  );
 }

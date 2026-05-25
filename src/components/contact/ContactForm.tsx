@@ -16,7 +16,7 @@ interface FieldErrors {
 }
 
 const fieldClass =
-  "w-full border-none bg-[#d8d8d8] px-4 py-3.5 text-text-dark placeholder:text-text-dark-40 focus:outline-none";
+  "w-full border-none bg-[#d8d8d8] px-4 py-3.5 text-text-dark placeholder:text-text-dark-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-dark";
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -63,7 +63,7 @@ export function ContactForm({
 
   if (status === "success") {
     return (
-      <div>
+      <div role="status">
         <p className="mb-2 text-text-dark">{heading}</p>
         <p className="leading-[1.4] text-text-dark-70">
           Thanks — your message is on its way. I&rsquo;ll be in touch soon.
@@ -83,27 +83,37 @@ export function ContactForm({
 
       <div className="mb-4">
         <input
+          id="contact-name"
           name="name"
           type="text"
           placeholder="Name"
           aria-label="Name"
+          aria-invalid={errors.name ? true : undefined}
+          aria-describedby={errors.name ? "contact-name-error" : undefined}
           className={fieldClass}
         />
         {errors.name && (
-          <p className="mt-1 text-canvas-red">{errors.name}</p>
+          <p id="contact-name-error" className="mt-1 text-canvas-red">
+            {errors.name}
+          </p>
         )}
       </div>
 
       <div className="mb-4">
         <input
+          id="contact-email"
           name="email"
           type="email"
           placeholder="Email"
           aria-label="Email"
+          aria-invalid={errors.email ? true : undefined}
+          aria-describedby={errors.email ? "contact-email-error" : undefined}
           className={fieldClass}
         />
         {errors.email && (
-          <p className="mt-1 text-canvas-red">{errors.email}</p>
+          <p id="contact-email-error" className="mt-1 text-canvas-red">
+            {errors.email}
+          </p>
         )}
       </div>
 
@@ -126,19 +136,26 @@ export function ContactForm({
 
       <div className="mb-4">
         <textarea
+          id="contact-message"
           name="message"
           placeholder="Message"
           aria-label="Message"
+          aria-invalid={errors.message ? true : undefined}
+          aria-describedby={
+            errors.message ? "contact-message-error" : undefined
+          }
           rows={6}
           className={`${fieldClass} min-h-[160px] resize-y`}
         />
         {errors.message && (
-          <p className="mt-1 text-canvas-red">{errors.message}</p>
+          <p id="contact-message-error" className="mt-1 text-canvas-red">
+            {errors.message}
+          </p>
         )}
       </div>
 
       {status === "error" && (
-        <p className="mb-2 text-canvas-red">
+        <p role="alert" className="mb-2 text-canvas-red">
           Something went wrong sending your message. Please try again, or email
           directly.
         </p>

@@ -46,3 +46,6 @@ schema.json
 
 # local content-seeding aids (not part of the deployed app)
 /seed
+
+# local Claude Code tooling (launch configs, agent settings)
+/.claude

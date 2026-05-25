@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
 
+// Internal design reference — kept accessible but excluded from search
+// indexing and the sitemap (COS-144). A proper component library is tracked
+// as a follow-up.
 export const metadata = {
-  title: "Styleguide — Aled Pritchard",
+  title: "Styleguide",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "/styleguide" },
 };
 
 const CANVAS_COLORS = [

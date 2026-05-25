@@ -1,7 +1,14 @@
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ContactLinks } from "@/components/contact/ContactLinks";
 import { ContactMode } from "@/components/contact/ContactMode";
+import { pageMetadata } from "@/lib/site";
 import { getContactPage } from "@/sanity/queries";
+
+export const metadata = pageMetadata({
+  title: "Contact",
+  description: "Get in touch with Aled Pritchard.",
+  path: "/contact",
+});
 
 // Contact page — form on top, contact links anchored to the bottom of the
 // column so the last link sits level with the Menu toggle.
@@ -18,6 +25,7 @@ export default async function ContactPage() {
     <>
       <ContactMode />
       <main className="h-screen overflow-y-auto pl-[calc(var(--frame-col-details)+var(--frame-col-list))]">
+        <h1 className="sr-only">Contact</h1>
         <div className="flex min-h-full flex-col p-[var(--frame-edge)]">
           <div className="max-w-[522px]">
             <ContactForm
