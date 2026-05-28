@@ -53,6 +53,15 @@ const nextConfig: NextConfig = {
   images: {
     // Sanity's image CDN — covers, slides, and other asset images.
     remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io" }],
+    // Insert 1408 between Next.js's default 1200 and 1920 deviceSizes so
+    // ~1366–1440px laptop viewports pick a snug srcset variant instead of
+    // jumping to 1920w (COS-163). One extra srcset entry per `<Image>`,
+    // small CDN cost, ~30–40 KiB saved per full-bleed image at that width.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1408, 1920, 2048, 3840],
+    // Next 16 restricts `quality` prop values to this allowlist (default
+    // is `[75]` only). 70 is used on VisualLayer's full-bleed background;
+    // 75 stays for everything else (Next's default-prop value).
+    qualities: [70, 75],
   },
   async headers() {
     return [

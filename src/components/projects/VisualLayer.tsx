@@ -65,6 +65,11 @@ export function VisualLayer({ projects }: { projects: Project[] }) {
           alt=""
           fill
           sizes="100vw"
+          // 70 (vs the default 75) trims ~10–20% off these full-bleed
+          // background images with no visible difference at scale on
+          // photographic content (COS-163). 70 is allowlisted in
+          // next.config.ts `images.qualities`.
+          quality={70}
           priority={i === 0}
           className="object-cover transition-opacity duration-[var(--duration-base)] ease-standard"
           style={{
