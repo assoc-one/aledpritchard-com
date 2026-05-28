@@ -103,34 +103,37 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
   }
 `);
 
-// 60s time-based ISR (COS-140). Pages needing always-fresh data can opt out
-// via `export const dynamic = "force-dynamic"`.
-const CACHE = { next: { revalidate: 60 } };
+// Tag-based caching. Each fetch is tagged with the Sanity `_type` of the
+// document(s) it returns, so the /api/revalidate webhook can invalidate just
+// the affected content on publish. The 24h `revalidate` is a safety net for
+// the case where the webhook fails to fire — content won't go stale longer
+// than a day even without it.
+const cacheFor = (tag: string) => ({ next: { tags: [tag], revalidate: 86400 } });
 
 export function getAllProjects() {
-  return client.fetch(ALL_PROJECTS_QUERY, {}, CACHE);
+  return client.fetch(ALL_PROJECTS_QUERY, {}, cacheFor("project"));
 }
 
 export function getProjectBySlug(slug: string) {
-  return client.fetch(PROJECT_BY_SLUG_QUERY, { slug }, CACHE);
+  return client.fetch(PROJECT_BY_SLUG_QUERY, { slug }, cacheFor("project"));
 }
 
 export function getAllArticles() {
-  return client.fetch(ALL_ARTICLES_QUERY, {}, CACHE);
+  return client.fetch(ALL_ARTICLES_QUERY, {}, cacheFor("article"));
 }
 
 export function getArticleBySlug(slug: string) {
-  return client.fetch(ARTICLE_BY_SLUG_QUERY, { slug }, CACHE);
+  return client.fetch(ARTICLE_BY_SLUG_QUERY, { slug }, cacheFor("article"));
 }
 
 export function getAboutPage() {
-  return client.fetch(ABOUT_PAGE_QUERY, {}, CACHE);
+  return client.fetch(ABOUT_PAGE_QUERY, {}, cacheFor("aboutPage"));
 }
 
 export function getContactPage() {
-  return client.fetch(CONTACT_PAGE_QUERY, {}, CACHE);
+  return client.fetch(CONTACT_PAGE_QUERY, {}, cacheFor("contactPage"));
 }
 
 export function getSiteSettings() {
-  return client.fetch(SITE_SETTINGS_QUERY, {}, CACHE);
+  return client.fetch(SITE_SETTINGS_QUERY, {}, cacheFor("siteSettings"));
 }
