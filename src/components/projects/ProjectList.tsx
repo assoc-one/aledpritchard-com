@@ -6,9 +6,11 @@ import { useNav } from "@/lib/navigation";
 import { isWheelDrivenNav } from "@/lib/wheel";
 import type { Project } from "@/sanity/queries";
 
-// Once per browser session the list items reveal with a stagger; afterwards
-// the stable state shows only the tagline (ported from the v4 prototype).
-const SEEN_KEY = "cos-projects-revealed";
+// On every full page load (initial or reload/refresh) the list items reveal
+// with a stagger; client-side navigation back to home keeps them visible
+// without re-animating, because the frame layout — and this component's
+// `revealed` state — persists across in-app navigation (ported from the v4
+// prototype).
 const REVEAL_DELAY = 1200;
 const STAGGER_STEP = 60;
 
@@ -30,8 +32,6 @@ export function ProjectList({
   const [staggered, setStaggered] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(SEEN_KEY) === "1") return;
-    sessionStorage.setItem(SEEN_KEY, "1");
     const reveal = setTimeout(() => {
       setRevealed(true);
       setStaggered(true);
