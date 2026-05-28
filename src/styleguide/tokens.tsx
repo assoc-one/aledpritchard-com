@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-// Token reference data and components for the Storybook docs page.
-// Ported one-for-one from src/app/(frame)/styleguide/page.tsx so the
-// two stay byte-equivalent until COS-157 retires the live route.
+// Token reference data and components for the Storybook docs page at
+// Foundations / Tokens. Originally ported from an in-app /styleguide route
+// (retired in COS-157) and now the sole source of the live token reference.
 
 const CANVAS_COLORS = [
   { name: "canvas-dark", value: "#000000", cls: "bg-canvas-dark" },

@@ -56,12 +56,12 @@ The same variables are configured in the Vercel project (Development, Preview, P
 
 ## Component library (Storybook)
 
-Storybook hosts the design-token reference and (from COS-156 onwards) every UI component.
+Storybook hosts the design-token reference and every UI component.
 
 - `npm run storybook` — local dev server (default `http://localhost:6006`)
 - `npm run build-storybook` — static build (used for any future deploy target)
 
-The token reference lives under **Foundations / Tokens**. The matching live page at `/styleguide` is retained as a regression check until COS-157.
+The token reference lives under **Foundations / Tokens**; every component under `src/components/` has stories grouped by folder.
 
 ## Content management (Sanity)
 
