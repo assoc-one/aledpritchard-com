@@ -94,11 +94,11 @@ export function Typography() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <p className="text-text-white-40">text-display — 96px</p>
+        <p className="text-text-white-40">text-display — 84px</p>
         <p className="text-display text-text-white">Aa</p>
       </div>
       <div>
-        <p className="text-text-white-40">text-body — 16px</p>
+        <p className="text-text-white-40">text-body — 14px</p>
         <p className="text-body font-normal text-text-white">
           Regular 400 — the quick brown fox
         </p>

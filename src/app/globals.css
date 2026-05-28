@@ -9,6 +9,10 @@
    can override them — e.g. a text-colour utility on an <a> element. */
 @layer base {
   html {
+    /* 87.5% of the browser default 16px makes 1rem = 14px, scaling all
+       rem-based sizes (text-body, text-display, Tailwind spacing) down
+       12.5% without overriding user accessibility font preferences. */
+    font-size: 87.5%;
     height: 100%;
   }
 
