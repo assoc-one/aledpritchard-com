@@ -66,6 +66,8 @@ export async function POST(request: Request) {
     );
   }
 
-  revalidateTag(type);
+  // `{ expire: 0 }` is the documented Next.js 16 pattern for webhook-driven
+  // immediate expiry (single-arg form is deprecated in Next 16).
+  revalidateTag(type, { expire: 0 });
   return Response.json({ revalidated: true, type });
 }
