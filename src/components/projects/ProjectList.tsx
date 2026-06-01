@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { useNav } from "@/lib/navigation";
 import { isWheelDrivenNav } from "@/lib/wheel";
 import type { Project } from "@/sanity/queries";
 
-// On every full page load (initial or reload/refresh) the list items reveal
-// with a stagger; client-side navigation back to home keeps them visible
-// without re-animating, because the frame layout — and this component's
-// `revealed` state — persists across in-app navigation (ported from the v4
-// prototype).
-const REVEAL_DELAY = 1200;
+// On every full page load the list items reveal with a staggered slide-up. The
+// entrance is CSS-driven (`.list-item-reveal` in globals.css) so the titles are
+// painted at first paint rather than held hidden behind JS hydration — that
+// keeps them eligible as the LCP element. Client-side navigation back to home
+// keeps them in place without re-animating, because the frame layout (and this
+// component) persists across in-app navigation, so the keyframe only runs on
+// the initial mount (ported from the v4 prototype).
 const STAGGER_STEP = 60;
 
 export function ProjectList({
@@ -25,23 +26,6 @@ export function ProjectList({
   const projectIndex = useNav((s) => s.projectIndex);
   const goToProject = useNav((s) => s.goToProject);
   const enterSlides = useNav((s) => s.enterSlides);
-
-  // Cold-open reveal — `revealed` keeps items visible in the stable state for
-  // the rest of the session; `staggered` applies the one-time entrance delay.
-  const [revealed, setRevealed] = useState(false);
-  const [staggered, setStaggered] = useState(false);
-
-  useEffect(() => {
-    const reveal = setTimeout(() => {
-      setRevealed(true);
-      setStaggered(true);
-    }, REVEAL_DELAY);
-    const settle = setTimeout(() => setStaggered(false), REVEAL_DELAY + 1400);
-    return () => {
-      clearTimeout(reveal);
-      clearTimeout(settle);
-    };
-  }, []);
 
   // Keep the active project (or, in the stable state, the tagline) centred in
   // the scroll column. Wheel-driven navigation jumps instantly; clicks and
@@ -71,10 +55,8 @@ export function ProjectList({
 
   const isProjectMode = mode === "cover" || mode === "slide";
   // The list belongs to the project context only — hidden on the menu and
-  // inner pages. Items additionally stay hidden in the stable state until
-  // the cold-open reveal.
+  // inner pages.
   const listVisible = mode === "stable" || isProjectMode;
-  const itemsShown = isProjectMode || (mode === "stable" && revealed);
 
   function handleClick(index: number) {
     if (mode === "cover" && projectIndex === index) enterSlides();
@@ -82,9 +64,8 @@ export function ProjectList({
   }
 
   // `inert` keeps the off-screen list and its buttons out of focus/screen-reader
-  // order when they're visually hidden behind the menu or an inner page, and
-  // during the cold-open reveal delay.
-  const interactive = listVisible && itemsShown;
+  // order when they're visually hidden behind the menu or an inner page.
+  const interactive = listVisible;
 
   return (
     <div
@@ -113,17 +94,12 @@ export function ProjectList({
               itemRefs.current[index] = el;
             }}
             onClick={() => handleClick(index)}
-            className={`w-[280px] truncate text-left transition-[opacity,color] ease-standard ${
+            className={`list-item-reveal w-[280px] truncate text-left transition-colors duration-[var(--duration-base)] ease-standard ${
               isActive
                 ? "text-text-white"
                 : "text-text-white-40 hover:text-text-white-70"
             }`}
-            style={{
-              opacity: itemsShown ? 1 : 0,
-              pointerEvents: itemsShown ? "auto" : "none",
-              transitionDuration: staggered ? "800ms" : "var(--duration-base)",
-              transitionDelay: staggered ? `${index * STAGGER_STEP}ms` : "0ms",
-            }}
+            style={{ animationDelay: `${index * STAGGER_STEP}ms` }}
           >
             {project.title}
           </button>

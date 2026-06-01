@@ -43,6 +43,27 @@
   display: none;
 }
 
+/* Cold-open entrance for the project list — a staggered slide-up. Replaces the
+   old JS-timed reveal (which held items at opacity:0 for 1.2s and so delayed
+   LCP, since Chrome ignores opacity:0 elements). Animating transform keeps the
+   titles painted at first paint (LCP-eligible) and composited (CLS stays 0).
+   Runs once on mount; per-item delay is set inline. */
+.list-item-reveal {
+  animation: list-item-reveal var(--duration-slow) var(--ease-out-strong)
+    backwards;
+}
+
+@keyframes list-item-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
