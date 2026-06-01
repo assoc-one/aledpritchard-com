@@ -45,7 +45,7 @@ export function ProjectOverview({ projects }: { projects: Project[] }) {
   return (
     <div
       aria-hidden={!active}
-      className={`flex h-full items-center justify-center px-[var(--frame-edge)] transition-opacity duration-[var(--duration-base)] ease-standard ${
+      className={`flex h-full items-center justify-center bg-[#0e0e0e] px-[var(--frame-edge)] transition-opacity duration-[var(--duration-base)] ease-standard ${
         active
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0"

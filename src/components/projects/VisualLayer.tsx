@@ -49,10 +49,11 @@ export function VisualLayer({ projects }: { projects: Project[] }) {
 
   const layers = useMemo(() => buildLayers(projects), [projects]);
 
-  // Intro shares the cover image as its backdrop — the overview text renders
-  // over it, so the cover stays visible through the cover → intro transition.
+  // Intro has no backdrop image — the overview renders on the dark canvas with
+  // its own panel (see ProjectOverview), so the cover image fades out on the
+  // cover → intro step.
   const activeKey =
-    mode === "cover" || mode === "intro"
+    mode === "cover"
       ? `cover-${projectIndex}`
       : mode === "slide"
         ? `slide-${projectIndex}-${slideIndex}`
