@@ -22,6 +22,7 @@ const mockProjects: Project[] = [
     ],
     order: 1,
     summary: null,
+    overview: null,
     metadata: null,
     publishedAt: "2026-01-01T00:00:00Z",
   },

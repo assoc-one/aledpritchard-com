@@ -25,8 +25,8 @@ export const Effect: Story = {
   async beforeEach() {
     useNav.setState({
       projects: [
-        { slug: "jpmc", slideCount: 5 },
-        { slug: "wallpaper", slideCount: 4 },
+        { slug: "jpmc", slideCount: 5, hasOverview: false },
+        { slug: "wallpaper", slideCount: 4, hasOverview: false },
       ],
     });
   },

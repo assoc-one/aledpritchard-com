@@ -12,6 +12,9 @@ function pathForState(s: NavState): string | null {
       return "/";
     case "cover":
       return `/work/${s.projects[s.projectIndex]?.slug ?? ""}`;
+    case "intro":
+      // Intro is "slide 0" in the URL (COS-195 Q1).
+      return `/work/${s.projects[s.projectIndex]?.slug ?? ""}/0`;
     case "slide":
       return `/work/${s.projects[s.projectIndex]?.slug ?? ""}/${s.slideIndex + 1}`;
     case "about":
@@ -37,7 +40,8 @@ function applyPath(path: string) {
 
   const work = path.match(/^\/work\/([^/]+)(?:\/(\d+))?$/);
   if (work) {
-    if (work[2]) nav.goToSlideBySlug(work[1], parseInt(work[2], 10) - 1);
+    if (work[2] === "0") nav.goToIntroBySlug(work[1]);
+    else if (work[2]) nav.goToSlideBySlug(work[1], parseInt(work[2], 10) - 1);
     else nav.goToProjectBySlug(work[1]);
     return;
   }

@@ -46,7 +46,82 @@ export const project = defineType({
       title: "Summary",
       type: "text",
       rows: 3,
-      description: "Short description. Not yet surfaced — reserved for future use.",
+      description:
+        "SEO / social description — used for the project's <meta> and Open Graph tags. Distinct from the Overview body below.",
+    }),
+    defineField({
+      name: "overview",
+      title: "Overview (intro state)",
+      type: "object",
+      description:
+        "Optional editorial content shown on the project's intro state, between cover and first slide. Leave empty to skip the intro state entirely.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "title",
+          title: "Title",
+          type: "string",
+          validation: (rule) => rule.required().error("Title is required if overview is set"),
+        }),
+        defineField({
+          name: "subtitle",
+          title: "Subtitle",
+          type: "string",
+        }),
+        defineField({
+          name: "meta",
+          title: "Meta",
+          type: "array",
+          description:
+            "Short label/value pairs shown under the subtitle (e.g. Role / Design Director, Company / JPMorgan Chase, Year / 2022—2024).",
+          of: [
+            defineArrayMember({
+              type: "object",
+              name: "metaItem",
+              fields: [
+                defineField({
+                  name: "label",
+                  title: "Label",
+                  type: "string",
+                  validation: (rule) => rule.required(),
+                }),
+                defineField({
+                  name: "value",
+                  title: "Value",
+                  type: "string",
+                  validation: (rule) => rule.required(),
+                }),
+              ],
+              preview: {
+                select: { label: "label", value: "value" },
+                prepare({ label, value }) {
+                  return { title: value || "—", subtitle: label || "" };
+                },
+              },
+            }),
+          ],
+        }),
+        defineField({
+          name: "body",
+          title: "Body",
+          type: "array",
+          description: "Short paragraphs. Keep snappy — depth belongs in the article.",
+          of: [
+            defineArrayMember({
+              type: "block",
+              styles: [{ title: "Normal", value: "normal" }],
+              lists: [],
+              marks: {
+                decorators: [
+                  { title: "Strong", value: "strong" },
+                  { title: "Emphasis", value: "em" },
+                ],
+                annotations: [],
+              },
+            }),
+          ],
+        }),
+      ],
     }),
     defineField({
       name: "metadata",

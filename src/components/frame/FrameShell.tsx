@@ -47,6 +47,7 @@ export function FrameShell({
       projects.map((project) => ({
         slug: project.slug ?? "",
         slideCount: project.slides?.length ?? 0,
+        hasOverview: Boolean(project.overview?.title),
       })),
     [projects],
   );

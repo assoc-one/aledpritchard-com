@@ -26,6 +26,12 @@ const projectFields = `
   slides[]{ image, variant, caption },
   order,
   summary,
+  overview {
+    title,
+    subtitle,
+    meta[]{ label, value },
+    body
+  },
   metadata,
   publishedAt
 `;

@@ -1,5 +1,6 @@
 import { MenuOverlay } from "@/components/menu/MenuOverlay";
 import { ProjectList } from "@/components/projects/ProjectList";
+import { ProjectOverview } from "@/components/projects/ProjectOverview";
 import type { Project } from "@/sanity/queries";
 
 import { FrameDetails } from "./FrameDetails";
@@ -36,7 +37,8 @@ export function Frame({
         <div className="frame-list-column pointer-events-auto h-screen overflow-y-auto">
           <ProjectList projects={projects} tagline={tagline} />
         </div>
-        <div />
+        {/* Column 3 — the editorial overview, shown only in intro mode. */}
+        <ProjectOverview projects={projects} />
       </div>
       <MenuOverlay />
       <IndexSlot>
