@@ -21,6 +21,7 @@ export const slide = defineType({
       options: {
         list: [
           { title: "Full bleed", value: "full" },
+          { title: "Fill (cover, cropped to right column)", value: "fill" },
           { title: "Fit (right column)", value: "fit" },
         ],
         layout: "radio",
@@ -40,7 +41,8 @@ export const slide = defineType({
       return {
         media,
         title: caption || "Slide",
-        subtitle: variant === "fit" ? "Fit" : "Full bleed",
+        subtitle:
+          variant === "fit" ? "Fit" : variant === "fill" ? "Fill" : "Full bleed",
       };
     },
   },
