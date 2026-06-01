@@ -11,7 +11,7 @@ import { PageTitleSlot } from "./PageTitleSlot";
 // Persistent layout shell. Renders, back to front:
 //   1. the canvas background (recoloured by [data-canvas])
 //   2. the page content layer (children)
-//   3. the frame chrome overlay — a 480 / 320 / flex grid, pointer-events
+//   3. the frame chrome overlay — a 320 / 320 / flex grid, pointer-events
 //      disabled except for the interactive columns
 //   4. the index counter
 export function Frame({

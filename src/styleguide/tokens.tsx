@@ -39,7 +39,7 @@ const DURATIONS = [
 ];
 
 const COLUMNS = [
-  { name: "frame-col-details", value: "480px", cls: "w-[var(--frame-col-details)]" },
+  { name: "frame-col-details", value: "320px", cls: "w-[var(--frame-col-details)]" },
   { name: "frame-col-list", value: "320px", cls: "w-[var(--frame-col-list)]" },
   { name: "frame-edge", value: "32px", cls: "w-[var(--frame-edge)]" },
 ];
