@@ -13,7 +13,7 @@ import type { Project } from "@/sanity/queries";
 // keeps them in place without re-animating, because the frame layout (and this
 // component) persists across in-app navigation, so the keyframe only runs on
 // the initial mount (ported from the v4 prototype).
-const STAGGER_STEP = 60;
+const STAGGER_STEP = 120;
 
 export function ProjectList({
   projects,
