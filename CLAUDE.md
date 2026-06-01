@@ -99,15 +99,23 @@ Three modes built and iterated (v1–v12 prototypes):
 
 ## What Was Last Being Worked On
 <!-- UPDATE THIS AT THE END OF EVERY SESSION -->
-COS-196 (Video media support) / T10 decision (COS-207) — closed Done. Locked: host = **Mux** (via `sanity-plugin-mux-input`, Studio-native upload); polymorphic `media` field (image | mux.video) on the slide schema; playback split by variant — `full`/`fill` autoplay+muted+loop+no-controls, `fit` no-autoplay+controls+16:9; poster frames on. Pushed to **iteration 2** (after Feature 2's `fit`→`fill` variant migration). Implementation tickets drafted: COS-222 (T11 Mux+schema), COS-223 (T12 ambient `full`/`fill`), COS-224 (T13 framed `fit` player) — all Backlog, blocked by Feature 2.
-
-Key constraint for implementers: `VisualLayer.tsx` preloads ALL images as an always-mounted cross-fade stack; video must instead mount-on-active / pause+unmount off-active.
+COS-195 (Project intro mode + text overview) — **shipped to production** (PRs #22 + #27). A new `intro` navigation state sits between a project's cover and slide 1, shown only when the project has editorial `overview` content (cover → intro → slide 1; projects without overview skip it, unchanged).
+- **Schema:** optional `overview` object on `project` — title, subtitle, structured `{label, value}` meta, and a paragraph-only portable-text body. Absent → `overview: null` (backward compatible).
+- **Nav/URL:** `intro` added to the `Mode` union; `hasOverview` on `ProjectMeta`. URL is `/work/[slug]/0` — intro as "slide 0" (Q1), via the existing `[n]` route; a `/0` hit on a project without overview 307-redirects to the cover.
+- **Visual:** intro renders on the dark canvas (no cover image) with a subtle `#0e0e0e` fill panel in column 3; the project list + index counter stay visible. Built to Figma 119:3165.
+- **First content:** JPMC overview ("Scaling design quality without scaling control"), authored from cOS.Content case studies.
 
 ## Outstanding / Next Up
 <!-- UPDATE THIS AT THE END OF EVERY SESSION -->
-- Iteration 1 (COS-191): Features 1–4 ready to build. Feature 2 (COS-198/199 variant rename+migration) is the production-data-risk item and gates video work.
-- Iteration 2: COS-222 → COS-223/224 (video), once Feature 2 is Done. Aled to provision Mux account + env creds (`MUX_TOKEN_ID`/`MUX_TOKEN_SECRET`) before T11.
+- **Iteration 1 (COS-191) — complete.** All five features shipped: F1 narrow details column 480→320 (COS-192), F2 `fill` variant + `fit`→`fill` migration (COS-198/199), F3 frame hover-wake (COS-194), F4 intro mode (COS-195). F5 (video) was a decision only, parked for iteration 2.
+- **Q9 (open):** only JPMC has an overview so far — add overviews for more projects in `/studio` and intro mode appears automatically per project.
+- **Iteration 2 — video media (COS-222 → COS-223/224).** Now unblocked (F2 has shipped). Decision (COS-196 / T10) locked: host = **Mux** (`sanity-plugin-mux-input`, Studio-native upload); polymorphic `media` field (image | mux.video) on the slide schema; playback split by variant — `full`/`fill` autoplay+muted+loop+no-controls, `fit` no-autoplay+controls+16:9; poster frames on. Aled to provision Mux account + env creds (`MUX_TOKEN_ID`/`MUX_TOKEN_SECRET`) before T11. Key constraint: `VisualLayer.tsx` preloads ALL images as an always-mounted cross-fade stack; video must instead mount-on-active / pause+unmount off-active.
 
 ## File Structure
 <!-- UPDATE THIS WHEN SIGNIFICANT FILES ARE ADDED -->
-_[Claude Code: update this section when new components or pages are created]_
+
+### Project intro mode (COS-195)
+- `src/components/projects/ProjectOverview.tsx` — overview panel mounted in Frame's column 3; visible only in `intro` mode. `#0e0e0e` fill, 22px title, label/value meta strip, portable-text body (Figma 119:3165).
+- `src/components/projects/WorkIntroStub.tsx` — client route stub for `/work/[slug]/0` → `goToIntroBySlug`.
+- `src/app/(frame)/work/[slug]/[n]/page.tsx` — the `n=0` branch renders the intro (sr-only prose + stub) and redirects to the cover when the project has no overview.
+- Touched: `overview` field in `src/sanity/schemas/project.ts`; `intro` mode + `hasOverview` + transitions in `src/lib/navigation.ts`; intro↔`/0` sync in `src/lib/routerSync.ts`; `intro` handling in `VisualLayer` / `CoverOverlay` / `ProjectList` / `IndexCounter`.
