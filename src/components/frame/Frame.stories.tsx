@@ -20,6 +20,7 @@ const mockProjects: Project[] = [
     slides: null,
     order: 1,
     summary: null,
+    overview: null,
     metadata: null,
     publishedAt: "2026-01-01T00:00:00Z",
   },
@@ -34,6 +35,7 @@ const mockProjects: Project[] = [
     slides: null,
     order: 2,
     summary: null,
+    overview: null,
     metadata: null,
     publishedAt: "2026-01-01T00:00:00Z",
   },
@@ -48,6 +50,7 @@ const mockProjects: Project[] = [
     slides: null,
     order: 3,
     summary: null,
+    overview: null,
     metadata: null,
     publishedAt: "2026-01-01T00:00:00Z",
   },
@@ -76,6 +79,7 @@ export const Default: Story = {
       projects: mockProjects.map((p) => ({
         slug: p.slug ?? "",
         slideCount: p.slides?.length ?? 0,
+        hasOverview: Boolean(p.overview?.title),
       })),
     });
   },

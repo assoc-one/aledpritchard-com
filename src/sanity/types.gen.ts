@@ -195,6 +195,30 @@ export type Project = {
   >;
   order?: number;
   summary?: string;
+  overview?: {
+    title?: string;
+    subtitle?: string;
+    meta?: Array<{
+      label?: string;
+      value?: string;
+      _type: "metaItem";
+      _key: string;
+    }>;
+    body?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal";
+      listItem?: never;
+      markDefs?: null;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }>;
+  };
   metadata?: {
     stage?: string;
     duration?: string;
@@ -325,7 +349,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/queries.ts
 // Variable: ALL_PROJECTS_QUERY
-// Query: *[_type == "project" && defined(publishedAt) && publishedAt <= now()]    | order(order asc) {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{ image, variant, caption },  order,  summary,  metadata,  publishedAt}
+// Query: *[_type == "project" && defined(publishedAt) && publishedAt <= now()]    | order(order asc) {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{ image, variant, caption },  order,  summary,  overview {    title,    subtitle,    meta[]{ label, value },    body  },  metadata,  publishedAt}
 export type ALL_PROJECTS_QUERY_RESULT = Array<{
   _id: string;
   _type: "project";
@@ -353,6 +377,28 @@ export type ALL_PROJECTS_QUERY_RESULT = Array<{
   }> | null;
   order: number | null;
   summary: string | null;
+  overview: {
+    title: string | null;
+    subtitle: string | null;
+    meta: Array<{
+      label: string | null;
+      value: string | null;
+    }> | null;
+    body: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal";
+      listItem?: never;
+      markDefs?: null;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+  } | null;
   metadata: {
     stage?: string;
     duration?: string;
@@ -364,7 +410,7 @@ export type ALL_PROJECTS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries.ts
 // Variable: PROJECT_BY_SLUG_QUERY
-// Query: *[_type == "project" && slug.current == $slug][0] {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{ image, variant, caption },  order,  summary,  metadata,  publishedAt}
+// Query: *[_type == "project" && slug.current == $slug][0] {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{ image, variant, caption },  order,  summary,  overview {    title,    subtitle,    meta[]{ label, value },    body  },  metadata,  publishedAt}
 export type PROJECT_BY_SLUG_QUERY_RESULT = {
   _id: string;
   _type: "project";
@@ -392,6 +438,28 @@ export type PROJECT_BY_SLUG_QUERY_RESULT = {
   }> | null;
   order: number | null;
   summary: string | null;
+  overview: {
+    title: string | null;
+    subtitle: string | null;
+    meta: Array<{
+      label: string | null;
+      value: string | null;
+    }> | null;
+    body: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal";
+      listItem?: never;
+      markDefs?: null;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+  } | null;
   metadata: {
     stage?: string;
     duration?: string;
@@ -526,8 +594,8 @@ export type SITE_SETTINGS_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "project" && defined(publishedAt) && publishedAt <= now()]\n    | order(order asc) {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{ image, variant, caption },\n  order,\n  summary,\n  metadata,\n  publishedAt\n}\n': ALL_PROJECTS_QUERY_RESULT;
-    '\n  *[_type == "project" && slug.current == $slug][0] {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{ image, variant, caption },\n  order,\n  summary,\n  metadata,\n  publishedAt\n}\n': PROJECT_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "project" && defined(publishedAt) && publishedAt <= now()]\n    | order(order asc) {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{ image, variant, caption },\n  order,\n  summary,\n  overview {\n    title,\n    subtitle,\n    meta[]{ label, value },\n    body\n  },\n  metadata,\n  publishedAt\n}\n': ALL_PROJECTS_QUERY_RESULT;
+    '\n  *[_type == "project" && slug.current == $slug][0] {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{ image, variant, caption },\n  order,\n  summary,\n  overview {\n    title,\n    subtitle,\n    meta[]{ label, value },\n    body\n  },\n  metadata,\n  publishedAt\n}\n': PROJECT_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "article" && defined(publishedAt) && publishedAt <= now()]\n    | order(coalesce(order, 9999) asc, publishedAt desc) {\n      _id,\n      _type,\n      title,\n      "slug": slug.current,\n      lede,\n      publishedAt,\n      featured\n    }\n': ALL_ARTICLES_QUERY_RESULT;
     '\n  *[_type == "article" && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    lede,\n    body,\n    publishedAt,\n    featured,\n    order\n  }\n': ARTICLE_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "aboutPage"][0] {\n    _id,\n    _type,\n    bio,\n    experienceItems,\n    advisoryItems\n  }\n': ABOUT_PAGE_QUERY_RESULT;

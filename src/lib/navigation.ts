@@ -3,6 +3,7 @@ import { create } from "zustand";
 export type Mode =
   | "stable"
   | "cover"
+  | "intro"
   | "slide"
   | "menu"
   | "about"
@@ -16,6 +17,9 @@ export type Mode =
 export interface ProjectMeta {
   slug: string;
   slideCount: number;
+  // True when the project has editorial overview content (T6 `overview.title`).
+  // Lets transitions branch into the intro state without drilling project props.
+  hasOverview: boolean;
 }
 
 export interface NavState {
@@ -35,12 +39,14 @@ export interface NavState {
   goToProjectBySlug: (slug: string) => void;
   goToSlide: (projectIndex: number, slideIndex: number) => void;
   goToSlideBySlug: (slug: string, slideIndex: number) => void;
+  goToIntroBySlug: (slug: string) => void;
   goAbout: () => void;
   goContact: () => void;
   goWriting: () => void;
   openArticle: (slug: string) => void;
 
   // Relative steps (used by keyboard and wheel)
+  enterIntro: () => void;
   enterSlides: () => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -98,10 +104,33 @@ export const useNav = create<NavState>((set, get) => ({
     if (index >= 0) get().goToSlide(index, slideIndex);
   },
 
+  // Direct-URL entry for /work/[slug]/0. If the project has no overview the
+  // intro URL is invalid for it, so land on the cover instead (the route also
+  // redirects the URL back to /work/[slug] — see T8).
+  goToIntroBySlug: (slug) => {
+    const index = get().projects.findIndex((p) => p.slug === slug);
+    if (index < 0) return;
+    if (!get().projects[index]?.hasOverview) {
+      get().goToProject(index);
+      return;
+    }
+    set({ mode: "intro", projectIndex: index, slideIndex: 0 });
+  },
+
   goAbout: () => set({ mode: "about" }),
   goContact: () => set({ mode: "contact" }),
   goWriting: () => set({ mode: "writing", articleSlug: null }),
   openArticle: (slug) => set({ mode: "article", articleSlug: slug }),
+
+  // Relative entry into the intro state for the current project. With no
+  // overview there is nothing to show, so fall through into the slides.
+  enterIntro: () => {
+    const { projectIndex, projects } = get();
+    if (!projects[projectIndex]?.hasOverview) {
+      return get().enterSlides();
+    }
+    set({ mode: "intro", slideIndex: 0 });
+  },
 
   enterSlides: () => {
     const { projectIndex, projects } = get();
@@ -117,7 +146,8 @@ export const useNav = create<NavState>((set, get) => ({
   nextStep: () => {
     const { mode, projectIndex, slideIndex, projects } = get();
     if (mode === "stable") return get().goToProject(0);
-    if (mode === "cover") return get().enterSlides();
+    if (mode === "cover") return get().enterIntro();
+    if (mode === "intro") return get().enterSlides();
     if (mode === "slide") {
       const slides = projects[projectIndex]?.slideCount ?? 0;
       if (slideIndex < slides - 1) {
@@ -129,10 +159,15 @@ export const useNav = create<NavState>((set, get) => ({
   },
 
   prevStep: () => {
-    const { mode, projectIndex, slideIndex } = get();
+    const { mode, projectIndex, slideIndex, projects } = get();
     if (mode === "slide") {
       if (slideIndex > 0) set({ slideIndex: slideIndex - 1 });
+      else if (projects[projectIndex]?.hasOverview) set({ mode: "intro" });
       else set({ mode: "cover" });
+      return;
+    }
+    if (mode === "intro") {
+      set({ mode: "cover" });
       return;
     }
     if (mode === "cover") {
@@ -170,7 +205,9 @@ export const useNav = create<NavState>((set, get) => ({
       set({ mode: "writing", articleSlug: null });
       return;
     }
-    if (mode === "slide" || mode === "cover") set({ mode: "stable" });
+    if (mode === "slide" || mode === "intro" || mode === "cover") {
+      set({ mode: "stable" });
+    }
   },
 }));
 
