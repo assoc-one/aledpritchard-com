@@ -12,6 +12,8 @@ export const slide = defineType({
       name: "image",
       title: "Image",
       type: "image",
+      description:
+        "Recommended ≥2000px on the longest edge. Full-bleed slides read best as landscape (~2560×1440px); Fill / Fit slides sit in the right column, so portrait or square crops suit those. Drag the hotspot to set the focal point.",
       options: { hotspot: true },
       validation: (rule) => rule.required(),
     }),
