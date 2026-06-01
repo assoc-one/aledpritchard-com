@@ -1,7 +1,8 @@
 import { defineField, defineType } from "sanity";
 
 // A single image within a project's slide sequence. `full` is full-bleed;
-// `fit` is bounded to the right meta column (see COS-140 slide rendering).
+// `fill` covers the right column (cropped); `fit` contains the whole image
+// within the right column, letterboxed (see COS-140 / COS-200 slide rendering).
 export const slide = defineType({
   name: "slide",
   title: "Slide",
@@ -22,7 +23,7 @@ export const slide = defineType({
         list: [
           { title: "Full bleed", value: "full" },
           { title: "Fill (cover, cropped to right column)", value: "fill" },
-          { title: "Fit (right column)", value: "fit" },
+          { title: "Fit (contain, whole image)", value: "fit" },
         ],
         layout: "radio",
       },
@@ -42,7 +43,11 @@ export const slide = defineType({
         media,
         title: caption || "Slide",
         subtitle:
-          variant === "fit" ? "Fit" : variant === "fill" ? "Fill" : "Full bleed",
+          variant === "fit"
+            ? "Fit (contain)"
+            : variant === "fill"
+              ? "Fill"
+              : "Full bleed",
       };
     },
   },
