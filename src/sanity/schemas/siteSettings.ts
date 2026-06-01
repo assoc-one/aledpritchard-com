@@ -23,7 +23,8 @@ export const siteSettings = defineType({
       name: "ogImage",
       title: "Open Graph image",
       type: "image",
-      description: "Default social-share image.",
+      description:
+        "Default social-share image (Slack / LinkedIn / X etc.). Recommended 1200×630px landscape — it's cropped to that ratio.",
       options: { hotspot: true },
     }),
     defineField({
@@ -31,7 +32,7 @@ export const siteSettings = defineType({
       title: "Site icon",
       type: "image",
       description:
-        "Single source for the browser tab favicon, Apple touch icon, and PWA manifest icon. Accepts PNG or SVG. If unset, the bundled fallback mark is used.",
+        "Single source for the browser tab favicon, Apple touch icon, and PWA manifest icon. Recommended a square 512×512px PNG (or an SVG). If unset, the bundled fallback mark is used.",
       options: { accept: "image/png,image/svg+xml" },
       fields: [
         defineField({

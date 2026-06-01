@@ -23,7 +23,8 @@ export const project = defineType({
       name: "cover",
       title: "Cover image",
       type: "image",
-      description: "Shown in the project cover state. Drag the hotspot to set the focal point.",
+      description:
+        "Full-bleed background shown in the project cover state. Recommended landscape, ~2560×1440px (16:9). Drag the hotspot to set the focal point.",
       options: { hotspot: true },
       validation: (rule) => rule.required(),
     }),
