@@ -39,7 +39,7 @@
   --duration-slow: 600ms;
 
   /* Frame layout — three-column grid: details / list / flex */
-  --frame-col-details: 480px;
+  --frame-col-details: 320px;
   --frame-col-list: 320px;
   --frame-edge: 32px;
 
