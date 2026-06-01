@@ -59,7 +59,7 @@ export function ProjectList({
       column.scrollTo({ top: 0, behavior });
       return;
     }
-    if (mode === "cover" || mode === "slide") {
+    if (mode === "cover" || mode === "slide" || mode === "intro") {
       const item = itemRefs.current[projectIndex];
       if (!item) return;
       const columnRect = column.getBoundingClientRect();
@@ -72,7 +72,8 @@ export function ProjectList({
     }
   }, [mode, projectIndex]);
 
-  const isProjectMode = mode === "cover" || mode === "slide";
+  const isProjectMode =
+    mode === "cover" || mode === "slide" || mode === "intro";
   // The list belongs to the project context only — hidden on the menu and
   // inner pages. Items additionally stay hidden in the stable state until
   // the cold-open reveal.

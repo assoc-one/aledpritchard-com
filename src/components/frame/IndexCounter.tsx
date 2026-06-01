@@ -17,8 +17,10 @@ export function IndexCounter({ projects = [] }: { projects?: Project[] }) {
   const slideIndex = useNav((s) => s.slideIndex);
   const { onMouseEnter, onMouseLeave } = useFrameWake(projects);
 
-  const visible = mode === "cover" || mode === "slide";
-  const hasSlide = mode === "slide";
+  const visible = mode === "cover" || mode === "slide" || mode === "intro";
+  // Intro is "slide 0": show both numbers (project + slide) like the slide
+  // state, so the counter reads e.g. "01 01" on the overview.
+  const hasSlide = mode === "slide" || mode === "intro";
 
   return (
     <div
