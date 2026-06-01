@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useNav } from "@/lib/navigation";
+import { useFrameWake } from "@/lib/useFrameWake";
 import { isWheelDrivenNav } from "@/lib/wheel";
 import type { Project } from "@/sanity/queries";
 
@@ -25,6 +26,8 @@ export function ProjectList({
   const projectIndex = useNav((s) => s.projectIndex);
   const goToProject = useNav((s) => s.goToProject);
   const enterSlides = useNav((s) => s.enterSlides);
+  // The list column is one of the five frame hover-wake hit-targets (COS-194).
+  const { onMouseEnter, onMouseLeave } = useFrameWake(projects);
 
   // Cold-open reveal — `revealed` keeps items visible in the stable state for
   // the rest of the session; `staggered` applies the one-time entrance delay.
@@ -89,6 +92,8 @@ export function ProjectList({
   return (
     <div
       inert={!interactive}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className="flex flex-col gap-[5px] py-[calc(50vh-11px)] pr-[var(--frame-edge)] transition-opacity duration-[var(--duration-base)] ease-standard"
       style={{
         opacity: listVisible ? 1 : 0,
