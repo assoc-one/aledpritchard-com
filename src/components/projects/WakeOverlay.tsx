@@ -7,16 +7,17 @@ import { useNav } from "@/lib/navigation";
 // cover state so the full-bleed image dims and the frame/nav labels gain
 // contrast. `frameWake` is gated to full slides at the source and reset on
 // every navigation transition, so opacity can key off it directly. Fades at
-// --duration-fast (200ms) — quicker than the cover scrim's base timing. Shares
-// the cover scrim's z-[2] band (above the image, below content/chrome); never
-// shown at the same time as the cover scrim, which is cover-state only.
+// --duration-base (400ms) to match the cover scrim it mirrors and the rest of
+// the frame's transitions. Shares the cover scrim's z-[2] band (above the
+// image, below content/chrome); never shown at the same time as the cover
+// scrim, which is cover-state only.
 export function WakeOverlay() {
   const frameWake = useNav((s) => s.frameWake);
 
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[2] bg-[var(--cover-overlay)] transition-opacity duration-[var(--duration-fast)] ease-standard"
+      className="pointer-events-none fixed inset-0 z-[2] bg-[var(--cover-overlay)] transition-opacity duration-[var(--duration-base)] ease-standard"
       style={{ opacity: frameWake ? 1 : 0 }}
     />
   );
