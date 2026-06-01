@@ -44,7 +44,7 @@ export type Slide = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  variant?: "full" | "fit";
+  variant?: "full" | "fill" | "fit";
   caption?: string;
 };
 
@@ -372,7 +372,7 @@ export type ALL_PROJECTS_QUERY_RESULT = Array<{
       crop?: SanityImageCrop;
       _type: "image";
     } | null;
-    variant: "fit" | "full" | null;
+    variant: "fill" | "fit" | "full" | null;
     caption: string | null;
   }> | null;
   order: number | null;
@@ -433,7 +433,7 @@ export type PROJECT_BY_SLUG_QUERY_RESULT = {
       crop?: SanityImageCrop;
       _type: "image";
     } | null;
-    variant: "fit" | "full" | null;
+    variant: "fill" | "fit" | "full" | null;
     caption: string | null;
   }> | null;
   order: number | null;

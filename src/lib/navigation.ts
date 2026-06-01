@@ -56,6 +56,13 @@ export interface NavState {
   // Transient
   toggleMenu: () => void;
   escape: () => void;
+
+  // Frame hover-wake (COS-194). On `full`-variant slides only, hovering any
+  // frame hit-target sets this true, fading in the cover scrim over the image
+  // so the frame/nav labels gain contrast. Reset to false on every transition
+  // that can change the active mode/variant.
+  frameWake: boolean;
+  setFrameWake: (wake: boolean) => void;
 }
 
 const clamp = (n: number, lo: number, hi: number) =>
@@ -68,15 +75,23 @@ export const useNav = create<NavState>((set, get) => ({
   articleSlug: null,
   returnTo: null,
   projects: [],
+  frameWake: false,
 
   setProjects: (projects) => set({ projects }),
+  setFrameWake: (wake) => set({ frameWake: wake }),
 
   goHome: () =>
-    set({ mode: "stable", projectIndex: 0, slideIndex: 0, articleSlug: null }),
+    set({
+      mode: "stable",
+      projectIndex: 0,
+      slideIndex: 0,
+      articleSlug: null,
+      frameWake: false,
+    }),
 
   goToProject: (index) => {
     if (index < 0 || index >= get().projects.length) return;
-    set({ mode: "cover", projectIndex: index, slideIndex: 0 });
+    set({ mode: "cover", projectIndex: index, slideIndex: 0, frameWake: false });
   },
 
   goToProjectBySlug: (slug) => {
@@ -89,13 +104,14 @@ export const useNav = create<NavState>((set, get) => ({
     if (projectIndex < 0 || projectIndex >= projects.length) return;
     const slides = projects[projectIndex]?.slideCount ?? 0;
     if (slides === 0) {
-      set({ mode: "cover", projectIndex, slideIndex: 0 });
+      set({ mode: "cover", projectIndex, slideIndex: 0, frameWake: false });
       return;
     }
     set({
       mode: "slide",
       projectIndex,
       slideIndex: clamp(slideIndex, 0, slides - 1),
+      frameWake: false,
     });
   },
 
@@ -114,13 +130,14 @@ export const useNav = create<NavState>((set, get) => ({
       get().goToProject(index);
       return;
     }
-    set({ mode: "intro", projectIndex: index, slideIndex: 0 });
+    set({ mode: "intro", projectIndex: index, slideIndex: 0, frameWake: false });
   },
 
-  goAbout: () => set({ mode: "about" }),
-  goContact: () => set({ mode: "contact" }),
-  goWriting: () => set({ mode: "writing", articleSlug: null }),
-  openArticle: (slug) => set({ mode: "article", articleSlug: slug }),
+  goAbout: () => set({ mode: "about", frameWake: false }),
+  goContact: () => set({ mode: "contact", frameWake: false }),
+  goWriting: () => set({ mode: "writing", articleSlug: null, frameWake: false }),
+  openArticle: (slug) =>
+    set({ mode: "article", articleSlug: slug, frameWake: false }),
 
   // Relative entry into the intro state for the current project. With no
   // overview there is nothing to show, so fall through into the slides.
@@ -129,7 +146,7 @@ export const useNav = create<NavState>((set, get) => ({
     if (!projects[projectIndex]?.hasOverview) {
       return get().enterSlides();
     }
-    set({ mode: "intro", slideIndex: 0 });
+    set({ mode: "intro", slideIndex: 0, frameWake: false });
   },
 
   enterSlides: () => {
@@ -140,7 +157,7 @@ export const useNav = create<NavState>((set, get) => ({
       }
       return;
     }
-    set({ mode: "slide", slideIndex: 0 });
+    set({ mode: "slide", slideIndex: 0, frameWake: false });
   },
 
   nextStep: () => {
@@ -151,7 +168,7 @@ export const useNav = create<NavState>((set, get) => ({
     if (mode === "slide") {
       const slides = projects[projectIndex]?.slideCount ?? 0;
       if (slideIndex < slides - 1) {
-        set({ slideIndex: slideIndex + 1 });
+        set({ slideIndex: slideIndex + 1, frameWake: false });
       } else if (projectIndex < projects.length - 1) {
         get().goToProject(projectIndex + 1);
       }
@@ -161,18 +178,19 @@ export const useNav = create<NavState>((set, get) => ({
   prevStep: () => {
     const { mode, projectIndex, slideIndex, projects } = get();
     if (mode === "slide") {
-      if (slideIndex > 0) set({ slideIndex: slideIndex - 1 });
-      else if (projects[projectIndex]?.hasOverview) set({ mode: "intro" });
-      else set({ mode: "cover" });
+      if (slideIndex > 0) set({ slideIndex: slideIndex - 1, frameWake: false });
+      else if (projects[projectIndex]?.hasOverview)
+        set({ mode: "intro", frameWake: false });
+      else set({ mode: "cover", frameWake: false });
       return;
     }
     if (mode === "intro") {
-      set({ mode: "cover" });
+      set({ mode: "cover", frameWake: false });
       return;
     }
     if (mode === "cover") {
       if (projectIndex > 0) get().goToProject(projectIndex - 1);
-      else set({ mode: "stable" });
+      else set({ mode: "stable", frameWake: false });
     }
   },
 
@@ -186,13 +204,14 @@ export const useNav = create<NavState>((set, get) => ({
     const { mode, projectIndex } = get();
     if (mode === "stable") return;
     if (projectIndex > 0) get().goToProject(projectIndex - 1);
-    else set({ mode: "stable" });
+    else set({ mode: "stable", frameWake: false });
   },
 
   toggleMenu: () => {
     const { mode, returnTo } = get();
-    if (mode === "menu") set({ mode: returnTo ?? "stable", returnTo: null });
-    else set({ mode: "menu", returnTo: mode });
+    if (mode === "menu")
+      set({ mode: returnTo ?? "stable", returnTo: null, frameWake: false });
+    else set({ mode: "menu", returnTo: mode, frameWake: false });
   },
 
   escape: () => {
@@ -202,11 +221,11 @@ export const useNav = create<NavState>((set, get) => ({
       return get().goHome();
     }
     if (mode === "article") {
-      set({ mode: "writing", articleSlug: null });
+      set({ mode: "writing", articleSlug: null, frameWake: false });
       return;
     }
     if (mode === "slide" || mode === "intro" || mode === "cover") {
-      set({ mode: "stable" });
+      set({ mode: "stable", frameWake: false });
     }
   },
 }));

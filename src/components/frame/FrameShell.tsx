@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { CoverOverlay } from "@/components/projects/CoverOverlay";
 import { FitPanel } from "@/components/projects/FitPanel";
 import { VisualLayer } from "@/components/projects/VisualLayer";
+import { WakeOverlay } from "@/components/projects/WakeOverlay";
 import { useKeyboard } from "@/lib/keyboard";
 import { useNav } from "@/lib/navigation";
 import { useRouterSync } from "@/lib/routerSync";
@@ -71,6 +72,7 @@ export function FrameShell({
     <div data-canvas={canvas}>
       <VisualLayer projects={projects} />
       <CoverOverlay />
+      <WakeOverlay />
       <FitPanel projects={projects} />
       <Frame projects={projects} tagline={tagline}>
         {children}
