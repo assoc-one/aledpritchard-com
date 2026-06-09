@@ -34,11 +34,15 @@ function buildLayers(projects: Project[]): Layer[] {
       });
     }
     project.slides?.forEach((slide, si) => {
-      if (slide.image?.asset) {
+      // Image slides (incl. legacy slides coalesced into media.image by the
+      // query). Video slides render via the video players (T12/T13), not this
+      // image cross-fade stack, so they produce no layer here.
+      const image = slide.media?.image;
+      if (image?.asset) {
         layers.push({
           key: `slide-${pi}-${si}`,
-          url: urlFor(slide.image).url(),
-          position: hotspotPosition(slide.image.hotspot),
+          url: urlFor(image).url(),
+          position: hotspotPosition(image.hotspot),
           region: slide.variant === "fill" || slide.variant === "fit",
           contain: slide.variant === "fit",
         });

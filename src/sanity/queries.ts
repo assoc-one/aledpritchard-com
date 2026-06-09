@@ -23,7 +23,19 @@ const projectFields = `
   title,
   "slug": slug.current,
   cover,
-  slides[]{ image, variant, caption },
+  slides[]{
+    // Polymorphic media (COS-222): image or Mux video. The image branch
+    // coalesces a legacy top-level \`image\` (pre-migration slides) into
+    // \`media.image\`, so slides render identically whether or not the
+    // \`image\`→\`media.image\` migration has run yet. Video derefs the Mux
+    // asset for the playbackId the players need (T12/T13).
+    "media": {
+      "image": coalesce(media.image, image),
+      "video": media.video{ asset->{ playbackId, assetId, status } }
+    },
+    variant,
+    caption
+  },
   order,
   summary,
   overview {
