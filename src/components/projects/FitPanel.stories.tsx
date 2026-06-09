@@ -17,8 +17,8 @@ const mockProjects: Project[] = [
     slug: "jpmc",
     cover: null,
     slides: [
-      { image: null, variant: "full", caption: null },
-      { image: null, variant: "fit", caption: null },
+      { media: { image: null, video: null }, variant: "full", caption: null },
+      { media: { image: null, video: null }, variant: "fit", caption: null },
     ],
     order: 1,
     summary: null,

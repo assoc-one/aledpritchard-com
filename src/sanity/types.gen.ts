@@ -15,6 +15,26 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type Media = {
+  image?: MediaImage;
+  video?: MuxVideo;
+};
+
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type MediaImage = {
+  asset?: SanityImageAssetReference;
+  media?: unknown; // Unable to locate the referenced type "image.media" in schema
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  _type: "image";
+};
+
 export type SubjectOption = {
   _type: "subjectOption";
   label?: string;
@@ -28,22 +48,9 @@ export type ExperienceItem = {
   description?: string;
 };
 
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-};
-
 export type Slide = {
   _type: "slide";
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
+  media?: Media;
   variant?: "full" | "fill" | "fit";
   caption?: string;
 };
@@ -228,6 +235,109 @@ export type Project = {
   publishedAt?: string;
 };
 
+export type MuxVideoAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "mux.videoAsset";
+};
+
+export type MuxVideo = {
+  _type: "mux.video";
+  asset?: MuxVideoAssetReference;
+};
+
+export type MuxVideoAsset = {
+  _id: string;
+  _type: "mux.videoAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  status?: string;
+  assetId?: string;
+  playbackId?: string;
+  filename?: string;
+  thumbTime?: number;
+  data?: MuxAssetData;
+};
+
+export type MuxAssetData = {
+  _type: "mux.assetData";
+  resolution_tier?: string;
+  upload_id?: string;
+  created_at?: string;
+  id?: string;
+  status?: string;
+  max_stored_resolution?: string;
+  passthrough?: string;
+  encoding_tier?: string;
+  video_quality?: string;
+  master_access?: string;
+  aspect_ratio?: string;
+  duration?: number;
+  max_stored_frame_rate?: number;
+  mp4_support?: string;
+  max_resolution_tier?: string;
+  tracks?: Array<
+    {
+      _key: string;
+    } & MuxTrack
+  >;
+  playback_ids?: Array<
+    {
+      _key: string;
+    } & MuxPlaybackId
+  >;
+  static_renditions?: MuxStaticRenditions;
+};
+
+export type MuxStaticRenditions = {
+  _type: "mux.staticRenditions";
+  status?: string;
+  files?: Array<
+    {
+      _key: string;
+    } & MuxStaticRenditionFile
+  >;
+};
+
+export type MuxStaticRenditionFile = {
+  _type: "mux.staticRenditionFile";
+  name?: string;
+  ext?: string;
+  height?: number;
+  width?: number;
+  bitrate?: number;
+  filesize?: string;
+  type?: string;
+  status?: string;
+  resolution_tier?: string;
+  resolution?: string;
+  id?: string;
+  passthrough?: string;
+};
+
+export type MuxPlaybackId = {
+  _type: "mux.playbackId";
+  id?: string;
+  policy?: string;
+};
+
+export type MuxTrack = {
+  _type: "mux.track";
+  id?: string;
+  type?: string;
+  max_width?: number;
+  max_frame_rate?: number;
+  duration?: number;
+  max_height?: number;
+  language_code?: string;
+  name?: string;
+  status?: string;
+  text_source?: string;
+  text_type?: string;
+};
+
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
   background?: string;
@@ -326,9 +436,11 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | Media
+  | SanityImageAssetReference
+  | MediaImage
   | SubjectOption
   | ExperienceItem
-  | SanityImageAssetReference
   | Slide
   | SiteSettings
   | SanityImageCrop
@@ -338,6 +450,14 @@ export type AllSanitySchemaTypes =
   | Article
   | Slug
   | Project
+  | MuxVideoAssetReference
+  | MuxVideo
+  | MuxVideoAsset
+  | MuxAssetData
+  | MuxStaticRenditions
+  | MuxStaticRenditionFile
+  | MuxPlaybackId
+  | MuxTrack
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -349,7 +469,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/queries.ts
 // Variable: ALL_PROJECTS_QUERY
-// Query: *[_type == "project" && defined(publishedAt) && publishedAt <= now()]    | order(order asc) {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{ image, variant, caption },  order,  summary,  overview {    title,    subtitle,    meta[]{ label, value },    body  },  metadata,  publishedAt}
+// Query: *[_type == "project" && defined(publishedAt) && publishedAt <= now()]    | order(order asc) {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{    // Polymorphic media (COS-222): image or Mux video. The image branch    // coalesces a legacy top-level `image` (pre-migration slides) into    // `media.image`, so slides render identically whether or not the    // `image`→`media.image` migration has run yet. Video derefs the Mux    // asset for the playbackId the players need (T12/T13).    "media": {      "image": coalesce(media.image, image),      "video": media.video{ asset->{ playbackId, assetId, status } }    },    variant,    caption  },  order,  summary,  overview {    title,    subtitle,    meta[]{ label, value },    body  },  metadata,  publishedAt}
 export type ALL_PROJECTS_QUERY_RESULT = Array<{
   _id: string;
   _type: "project";
@@ -365,13 +485,16 @@ export type ALL_PROJECTS_QUERY_RESULT = Array<{
     _type: "image";
   } | null;
   slides: Array<{
-    image: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    media: {
+      image: MediaImage | null;
+      video: {
+        asset: {
+          playbackId: string | null;
+          assetId: string | null;
+          status: string | null;
+        } | null;
+      } | null;
+    };
     variant: "fill" | "fit" | "full" | null;
     caption: string | null;
   }> | null;
@@ -410,7 +533,7 @@ export type ALL_PROJECTS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries.ts
 // Variable: PROJECT_BY_SLUG_QUERY
-// Query: *[_type == "project" && slug.current == $slug][0] {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{ image, variant, caption },  order,  summary,  overview {    title,    subtitle,    meta[]{ label, value },    body  },  metadata,  publishedAt}
+// Query: *[_type == "project" && slug.current == $slug][0] {  _id,  _type,  _createdAt,  _updatedAt,  title,  "slug": slug.current,  cover,  slides[]{    // Polymorphic media (COS-222): image or Mux video. The image branch    // coalesces a legacy top-level `image` (pre-migration slides) into    // `media.image`, so slides render identically whether or not the    // `image`→`media.image` migration has run yet. Video derefs the Mux    // asset for the playbackId the players need (T12/T13).    "media": {      "image": coalesce(media.image, image),      "video": media.video{ asset->{ playbackId, assetId, status } }    },    variant,    caption  },  order,  summary,  overview {    title,    subtitle,    meta[]{ label, value },    body  },  metadata,  publishedAt}
 export type PROJECT_BY_SLUG_QUERY_RESULT = {
   _id: string;
   _type: "project";
@@ -426,13 +549,16 @@ export type PROJECT_BY_SLUG_QUERY_RESULT = {
     _type: "image";
   } | null;
   slides: Array<{
-    image: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    media: {
+      image: MediaImage | null;
+      video: {
+        asset: {
+          playbackId: string | null;
+          assetId: string | null;
+          status: string | null;
+        } | null;
+      } | null;
+    };
     variant: "fill" | "fit" | "full" | null;
     caption: string | null;
   }> | null;
@@ -594,8 +720,8 @@ export type SITE_SETTINGS_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "project" && defined(publishedAt) && publishedAt <= now()]\n    | order(order asc) {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{ image, variant, caption },\n  order,\n  summary,\n  overview {\n    title,\n    subtitle,\n    meta[]{ label, value },\n    body\n  },\n  metadata,\n  publishedAt\n}\n': ALL_PROJECTS_QUERY_RESULT;
-    '\n  *[_type == "project" && slug.current == $slug][0] {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{ image, variant, caption },\n  order,\n  summary,\n  overview {\n    title,\n    subtitle,\n    meta[]{ label, value },\n    body\n  },\n  metadata,\n  publishedAt\n}\n': PROJECT_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "project" && defined(publishedAt) && publishedAt <= now()]\n    | order(order asc) {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{\n    // Polymorphic media (COS-222): image or Mux video. The image branch\n    // coalesces a legacy top-level `image` (pre-migration slides) into\n    // `media.image`, so slides render identically whether or not the\n    // `image`\u2192`media.image` migration has run yet. Video derefs the Mux\n    // asset for the playbackId the players need (T12/T13).\n    "media": {\n      "image": coalesce(media.image, image),\n      "video": media.video{ asset->{ playbackId, assetId, status } }\n    },\n    variant,\n    caption\n  },\n  order,\n  summary,\n  overview {\n    title,\n    subtitle,\n    meta[]{ label, value },\n    body\n  },\n  metadata,\n  publishedAt\n}\n': ALL_PROJECTS_QUERY_RESULT;
+    '\n  *[_type == "project" && slug.current == $slug][0] {\n  _id,\n  _type,\n  _createdAt,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  cover,\n  slides[]{\n    // Polymorphic media (COS-222): image or Mux video. The image branch\n    // coalesces a legacy top-level `image` (pre-migration slides) into\n    // `media.image`, so slides render identically whether or not the\n    // `image`\u2192`media.image` migration has run yet. Video derefs the Mux\n    // asset for the playbackId the players need (T12/T13).\n    "media": {\n      "image": coalesce(media.image, image),\n      "video": media.video{ asset->{ playbackId, assetId, status } }\n    },\n    variant,\n    caption\n  },\n  order,\n  summary,\n  overview {\n    title,\n    subtitle,\n    meta[]{ label, value },\n    body\n  },\n  metadata,\n  publishedAt\n}\n': PROJECT_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "article" && defined(publishedAt) && publishedAt <= now()]\n    | order(coalesce(order, 9999) asc, publishedAt desc) {\n      _id,\n      _type,\n      title,\n      "slug": slug.current,\n      lede,\n      publishedAt,\n      featured\n    }\n': ALL_ARTICLES_QUERY_RESULT;
     '\n  *[_type == "article" && slug.current == $slug][0] {\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    lede,\n    body,\n    publishedAt,\n    featured,\n    order\n  }\n': ARTICLE_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "aboutPage"][0] {\n    _id,\n    _type,\n    bio,\n    experienceItems,\n    advisoryItems\n  }\n': ABOUT_PAGE_QUERY_RESULT;
